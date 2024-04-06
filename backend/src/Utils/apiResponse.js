@@ -1,6 +1,6 @@
-class apiResonse {
+class apiResponse {
     constructor(statusCode, message, data, success){
-        super(message);
+        // super(message); // no need of super here
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
@@ -8,4 +8,4 @@ class apiResonse {
     }
 }
 
-export default apiResonse;
+export default apiResponse;

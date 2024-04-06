@@ -20,15 +20,15 @@ app.use(cors(
 ));
 
 app.use(cookieParser());
-app.use(express.json({limit: "16kb"}));
-app.use(express.urlencoded(
+app.use(express.json({limit: "16kb"})); // to send json data
+app.use(express.urlencoded(   //to send urlencoded data like slud.includes(+, -) 
     {
         extended: true,
         limit: "16kb"
     }
 ));
 
-app.use(express.static("public"));
+app.use(express.static("public")); 
 
 
 // defining routes
