@@ -1,6 +1,4 @@
-import { kMaxLength } from 'buffer';
 import mongoose from 'mongoose';
-import { type } from 'os';
 
 const userSchema = new mongoose.Schema(
     {
@@ -21,7 +19,7 @@ const userSchema = new mongoose.Schema(
         },
         photoURL: {
             type: String,
-
+            default : "https://i.pinimg.com/originals/8e/6c/41/8e6c415ce319ca467b93c529bc1f3724.jpg",
         }
     },{timeStamp: true}
 )
