@@ -22,19 +22,25 @@ const userSchema = new mongoose.Schema(
         photoURL: {
             type: String,
             default: "https://i.pinimg.com/originals/8e/6c/41/8e6c415ce319ca467b93c529bc1f3724.jpg",
+        },
+        refreshToken:{
+            type: String
         }
     },{timeStamp: true}
 )
-//do something before(pre) saving(save) the data
-userSchema.pre('save', async function (next){
-    if(!this.isModified('password'))
+// pre hook: before 'save' this document do this following
+userSchema.pre("save", async function (next) {
+    if(!this.isModified("password")) 
         return next();
-    this.password = bcryptjs.hashSync(this.password, 10);
-    next();
-});
 
-userSchema.methods.isPasswordCorrect = function(password){
-    return bcryptjs.compareSync(this.password, password);
+    this.password = bcryptjs.hashSync(this.password, 10)
+    next()
+})
+//method injection: to check whether entered password is correct or not
+userSchema.methods.isPasswordCorrect = async function (password) {
+    // console.log('inside userSchema', password)
+    // return bcryptjs.compareSync(this.password, password); //   WRONG!!!! first normal passsword then hashed password
+    return bcryptjs.compareSync(password, this.password);
 }
 
 userSchema.methods.generateAccessToken = function(){
@@ -46,7 +52,7 @@ userSchema.methods.generateAccessToken = function(){
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn: ACCESS_TOKEN_EXPIRY
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
         }
     )
 }
@@ -58,7 +64,7 @@ userSchema.methods.generateRefreshToken = function(){
         },
         process.env.REFRESH_TOKEN_SECRET,
         {
-            expiresIn: REFRESH_TOKEN_EXPIRY
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
     )
 }
