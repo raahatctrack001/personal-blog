@@ -32,4 +32,4 @@ To run the Personal Blog Web Application locally on your machine, follow these s
 
 1. Clone the repository to your local machine:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/raahatctrack001/personal-blog.git
