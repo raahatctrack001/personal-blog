@@ -31,6 +31,11 @@ app.use(express.urlencoded(
 app.use(express.static("public"));
 
 
+// defining routes
+import authRoute from "./Routes/auth.route.js";
+app.use("/api/v1/auth", authRoute)
+
+
 
 
 
