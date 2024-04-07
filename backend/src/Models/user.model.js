@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
         },
         refreshToken:{
             type: String
+        },
+        isAdmin:{
+            type: Boolean,
+            default: false,
         }
     },{timeStamp: true}
 )
