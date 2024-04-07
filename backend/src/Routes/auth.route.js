@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { 
+    deleteUser,
     loginUser, 
     registerUser, 
     updateAccoutDetails, 
@@ -14,4 +15,7 @@ router.route('/register').post(upload.none(),  registerUser)
 router.route('/login').post(upload.none(), loginUser);
 router.route('/upload-profile-picture').post(verifyUser, upload.single('profile'), uploadProfilePicture)
 router.route('/update-account-details').post(verifyUser, upload.none(), updateAccoutDetails)
+router.route('/delete-user').post(verifyUser, deleteUser)
+
+
 export default router

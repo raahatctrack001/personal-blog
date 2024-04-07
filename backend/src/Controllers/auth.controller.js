@@ -192,3 +192,19 @@ export const updateAccoutDetails = asyncHandler(async (req, res, next)=>{
                 new apiResponse(200, "User update SUCCESS!", currentUser,)
             )
 })
+
+export const deleteUser = asyncHandler(async (req, res, next)=>{
+    try {
+        await User.findByIdAndDelete(
+            req.user?._id
+        );
+        return res
+            .status(200)
+            .json(
+                new apiResponse(200, "User Deleted", null)
+            )
+    } catch (error) {
+        console.log(error)
+    }
+    
+})
