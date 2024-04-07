@@ -4,7 +4,7 @@ import User from "../Models/user.model.js";
 import apiResponse from "../Utils/apiResponse.js";
 import bcryptjs from 'bcryptjs'
 import dotenv from "dotenv";
-
+import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
 
 dotenv.config({path:"./.env"})
 
@@ -101,4 +101,64 @@ export const loginUser = asyncHandler(async (req, res, next)=>{
         .json(
             new apiResponse(200, "Login Successful!", {user: loggedInUser, accessToken, refreshToken})
         );  
+})
+
+//to do's
+/**
+ * import vs as cloudianry
+ * config cloudinary cloud name api key and secret 
+ * get file.path from local files 
+ * use multer to store file in local storage
+ * send it to cloudinary function
+ * validate localpath
+ * cloudianry.upload.upload
+ * upload and get reponse also unlink file * 
+ */
+export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
+    console.log(req.file.path);
+    const profileLocalPath = req.file.path;
+    if(!profileLocalPath){
+        throw new apiError(400, "please select an image!")
+    }
+    try {
+        const response = await uploadOnCloudinary(profileLocalPath);
+        if(!response){
+            throw new apiError(500, "error uploading profile picutre");
+        }
+        console.log(response);  
+        const currentUser = await User.findById(req.user?._id).select("-password -refreshToken");
+        if(!currentUser){
+            throw new apiError(500, "Failed to upload profile image.")
+        }     
+        // currentUser.photoURL = response.url;
+        // await currentUser
+        //     .save()
+        //     .then(savedUser=>console.log(savedUser))
+        //     .catch(error=>console.log("failed to update database", error))
+        // console.log('updated user', updatedUser);
+        //Or
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                $set:{
+                    photoURL: response.url,
+                },
+            },            
+            {
+                new: true
+            }
+        ).select("-password -refreshToken");
+        if(!updatedUser){
+            throw new apiError(500, "failed to update data base");
+        }
+        console.log(updatedUser);
+        return res
+            .status(200)
+            .json(
+                new apiResponse(200, "profile udpate SUCCESS", updatedUser)
+            )
+    } catch (error) {
+        console.log(error)
+    }
 })
