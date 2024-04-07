@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
     },{timeStamp: true}
 )
 // pre hook: before 'save' this document do this following
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", function (next) {
     if(!this.isModified("password")) 
         return next();
 

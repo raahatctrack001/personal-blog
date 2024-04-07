@@ -22,7 +22,7 @@ export const verifyUser = asyncHandler(async (req, res, next)=>{
             throw new apiError(500, "Access token expired or used");
         }
         req.user = currentUser;
-        next();
+        next();  
     } catch (error) {
         console.log(error);
     }
