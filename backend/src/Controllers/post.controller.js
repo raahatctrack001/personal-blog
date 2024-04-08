@@ -3,6 +3,9 @@ import apiError from "../Utils/apiError.js";
 import apiResponse from "../Utils/apiResponse.js";
 import asyncHandler from "../Utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
+import User from "../Models/user.model.js";
+import upload from "../Middlewares/multer.middleware.js";
+import { resolve } from "path";
 
 export const createPost = asyncHandler(async (req, res, next)=>{
     if(!req.user.isAdmin){
@@ -58,14 +61,15 @@ export const createPost = asyncHandler(async (req, res, next)=>{
 })
 
 
-export const getPosts = async (req, res, next) => {
+export const getPosts = asyncHandler(async (req, res, next) => {
     // console.log(req.query);
+    // console.log(req)
     // throw new apiError(500, "intentional termination for unit testing.");
     try {
       const startIndex = parseInt(req.query.startIndex) || 0;
       const limit = parseInt(req.query.limit) || 9;
       const sortDirection = req.query.order === 'asc' ? 1 : -1;
-      console.log(req.query)
+      // console.log(req.query)
       const posts = await Post.find({
         ...(req.query.userId && { userId: req.query.userId }),
         ...(req.query.category && { category: req.query.category }),
@@ -108,4 +112,73 @@ export const getPosts = async (req, res, next) => {
     } catch (error) {
       console.log(error)
     }
-  };
+})
+
+
+export const deletePost = asyncHandler(async (req, res, next)=>{
+  if(!req.user?.isAdmin){
+    throw new apiError(400, "You are not authorised to delete the post.");
+  }
+  if(req.params.userId != req.user?._id){
+    throw new apiError(400, "You can only delete your own posts.");
+  }
+  try {
+      const deletedPost = await Post.findByIdAndDelete(req.params.postId);
+      return res
+        .status(200)
+        .json(
+          new apiResponse(200, "Post deleted", deletedPost)
+        )   
+  } catch (error) {
+    console.log(error)
+  }
+
+  console.log(req.user);
+  console.log(req.user._id == req.params.userId);
+  console.log(req.params);
+})
+
+
+export const updatePost = asyncHandler(async (req, res, next)=>{
+  if(!req.user?.isAdmin){
+    throw new apiError(401, "only admin can alter the post");
+  }
+
+  if(req.params.userId != req.user?._id){
+    throw new apiError(409, "you can update only your posts.")
+  }
+
+  const {title, content} = req.body;
+  if(
+    [title, content].some(field=>field?.trim()?0:1)
+  ){
+    throw new apiError(401, "all fields are required!");
+  }
+try {
+  
+    let imgURL = null;
+    if(req.file){
+      const localFilePath = req.file?.path;
+      const response = await uploadOnCloudinary(localFilePath);
+      imgURL = response.url;
+    }
+    const newSlug = title.split(' ').join('-').toLowerCase().replace(/[^a-zA-z0-9]/g, '-');
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params?.postId,
+      {
+        $set: {
+          title,
+          content,
+          postImage: imgURL||"https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg",
+          slug: newSlug,
+        },
+      },
+      {
+        new: true,
+      }
+    )
+    console.log(updatedPost);
+} catch (error) {
+  console.log(error) 
+}
+})

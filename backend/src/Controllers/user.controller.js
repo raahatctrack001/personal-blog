@@ -4,6 +4,7 @@ import User from "../Models/user.model.js";
 import apiResponse from "../Utils/apiResponse.js";
 import bcryptjs from 'bcryptjs'
 import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
+import e from "express";
 
 export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
     console.log(req.file.path);
@@ -82,4 +83,16 @@ export const updateAccoutDetails = asyncHandler(async (req, res, next)=>{
             .json(
                 new apiResponse(200, "User update SUCCESS!", currentUser,)
             )
+})
+
+export const  getAllUsers = asyncHandler(async (req, res, next)=>{
+
+})
+
+export const getUsers = asyncHandler(async (req, res, next)=>{
+
+})
+
+export const getUser = asyncHandler(async (req, res, next)=>{
+
 })
