@@ -1,4 +1,11 @@
-"Excited to unveil my latest achievement: completing the backend development for a cutting-edge personal blog website! This marks a pivotal moment in my journey as a full-stack developer, showcasing my prowess in crafting robust, scalable, and efficient backend systems. With meticulous attention to detail, I've ensured seamless data management, user authentication, and content delivery. But this is just the beginning. Version 1 is merely a glimpse of what's to come. I'm driven to optimize, implement, and integrate, ensuring top-notch quality and exceeding client expectations. Ready to elevate backend development and embrace new challenges head-on!"
+"Excited to unveil my latest achievement: completing the backend development for a 
+cutting-edge personal blog website! This marks a pivotal moment in my journey as a 
+full-stack developer, showcasing my prowess in crafting robust, scalable, and efficient 
+backend systems. With meticulous attention to detail, I've ensured seamless data management, 
+user authentication, and content delivery. But this is just the beginning. Version 1 is merely 
+a glimpse of what's to come. I'm driven to optimize, implement, and integrate, ensuring 
+top-notch quality and exceeding client expectations. Ready to elevate backend development 
+and embrace new challenges head-on!"
 
 Tech Stack(in backend):
 Node.js
@@ -10,9 +17,23 @@ MongoDB
 5. Relationship
 6. Index
 
-"Embarking on an exciting journey through the Software Development Life Cycle (SDLC)! Leveraging the waterfall model, Version 1 of our project has surged forward, swiftly progressing from planning to implementation. Now, as we prepare to enter the testing phase for the backend, our sights are set on elevating our approach. In future iterations, we're shifting gears to embrace agile Scrum methodology. While our project may not be sprawling, our commitment to excellence knows no bounds. It's time to revolutionize our process and deliver results the agile way!"
-"I've strategically structured my time to balance competitive programming on platforms like LeetCode and Codeforces with software development. Weekdays are dedicated to refining algorithmic skills, mastering data structures, and enhancing problem-solving abilities. Come weekends, I immerse myself in real-world software projects, designing, implementing, and refining solutions. This approach ensures a healthy equilibrium between honing technical skills and applying them in practical scenarios, fostering continuous growth as a software engineer."
+"Embarking on an exciting journey through the Software Development Life Cycle (SDLC)! 
+Leveraging the waterfall model, Version 1 of our project has surged forward, swiftly 
+progressing from planning to implementation. Now, as we prepare to enter the testing 
+phase for the backend, our sights are set on elevating our approach. In future iterations, 
+we're shifting gears to embrace agile Scrum methodology. While our project may not be 
+sprawling, our commitment to excellence knows no bounds. It's time to revolutionize our 
+process and deliver results the agile way!"
+"I've strategically structured my time to balance competitive programming on platforms 
+like LeetCode and Codeforces with software development. Weekdays are dedicated to refining 
+algorithmic skills, mastering data structures, and enhancing problem-solving abilities. 
+Come weekends, I immerse myself in real-world software projects, designing, implementing, 
+and refining solutions. This approach ensures a healthy equilibrium between honing technical 
+skills and applying them in practical scenarios, fostering continuous growth as a software engineer."
 
-"Exciting news! Just wrapped up the backend structure for my latest project this weekend. Next up? Frontend development! I've attached the GitHub repository along with some code snippets for your review. Your feedback and suggestions are highly appreciated as I dive into the frontend realm. Stay tuned for more updates!"
+"Exciting news! Just wrapped up the backend structure for my latest project this weekend. 
+Next up? Frontend development! I've attached the GitHub repository along with some code 
+snippets for your review. Your feedback and suggestions are highly appreciated as I dive 
+into the frontend realm. Stay tuned for more updates!"
 Thank you
 GitHub: https://github.com/raahatctrack001/personal-blog.git
