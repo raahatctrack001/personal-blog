@@ -148,7 +148,7 @@ export const updatePost = asyncHandler(async (req, res, next)=>{
     throw new apiError(409, "you can update only your posts.")
   }
 
-  const {title, content} = req.body;
+  const {title, content, category} = req.body;
   if(
     [title, content].some(field=>field?.trim()?0:1)
   ){
@@ -171,13 +171,18 @@ try {
           content,
           postImage: imgURL||"https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg",
           slug: newSlug,
+          category: category,
         },
       },
       {
         new: true,
       }
     )
-    console.log(updatedPost);
+    return res  
+      .status(200)
+      .json(
+        new apiResponse(200, "post updated!", updatedPost)
+      )
 } catch (error) {
   console.log(error) 
 }

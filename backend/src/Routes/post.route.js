@@ -11,6 +11,6 @@ const router = Router();
 
 router.route('/create-post').post(upload.single('postImage'), verifyUser, createPost);
 router.route('/get-posts').get(getPosts);
-router.route('/delete-post/:postId/:userId').post(verifyUser, deletePost);
-router.route('/update-post/:postId/:userId').post(upload.single('postImage'), verifyUser, updatePost);
+router.route('/delete-post/:postId/:userId').delete(verifyUser, deletePost);
+router.route('/update-post/:postId/:userId').put(upload.single('postImage'), verifyUser, updatePost);
 export default router;
