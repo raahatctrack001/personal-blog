@@ -5,7 +5,7 @@ import Comment from '../Models/comment.model.js';
 import Post from '../Models/post.model.js';
 import User from '../Models/user.model.js';
 
-export const createComment = asyncHandler(async (req, res, next)=>{
+export const createComment = asyncHandler(async (req, res, _)=>{
     const { comment, postId, userId } = req.body;
     if(req.user?._id != userId){
         throw new apiError(409, "you are not allowed to comment. Please sign in.")
@@ -35,7 +35,7 @@ export const createComment = asyncHandler(async (req, res, next)=>{
     }
 })
 
-export const commentsOnPost = asyncHandler(async (req, res, next)=>{
+export const commentsOnPost = asyncHandler(async (req, res, _)=>{
     const postId = req.params?.postId;
     try {
         const post = await Post.findById(postId);
@@ -57,7 +57,7 @@ export const commentsOnPost = asyncHandler(async (req, res, next)=>{
     }
 })
 
-export const deleteComment = asyncHandler(async (req, res, next)=>{
+export const deleteComment = asyncHandler(async (req, res, _)=>{
     console.log(req.params);
     if(req.user?._id != req.params?.userId){
         throw new apiError(409, "You can delete only your comments")
@@ -79,7 +79,7 @@ export const deleteComment = asyncHandler(async (req, res, next)=>{
     }
 })
 
-export const updateComment = asyncHandler(async (req, res, next)=>{
+export const updateComment = asyncHandler(async (req, res, _)=>{
     // console.log(req.params)
     // console.log("updating comments...")
     // console.log(req.body)
@@ -122,7 +122,7 @@ export const updateComment = asyncHandler(async (req, res, next)=>{
     }
 })
 
-export const likeTheComment = asyncHandler(async (req, res, next)=>{
+export const likeTheComment = asyncHandler(async (req, res, _)=>{
     
     // throw new apiError(500, "intentional termination for unit testing")
     try {

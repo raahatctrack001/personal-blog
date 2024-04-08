@@ -5,7 +5,6 @@ import {
     deleteUser,
     getAllUsers,
     getUser,
-    // getUsers,
     updateAccoutDetails, 
     uploadProfilePicture }
 from "../Controllers/user.controller.js";

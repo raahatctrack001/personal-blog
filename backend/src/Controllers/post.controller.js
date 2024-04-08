@@ -3,9 +3,9 @@ import apiError from "../Utils/apiError.js";
 import apiResponse from "../Utils/apiResponse.js";
 import asyncHandler from "../Utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
-import User from "../Models/user.model.js";
-import upload from "../Middlewares/multer.middleware.js";
-import { resolve } from "path";
+// import User from "../Models/user.model.js";
+// import upload from "../Middlewares/multer.middleware.js";
+// import { resolve } from "path";
 
 export const createPost = asyncHandler(async (req, res, next)=>{
     if(!req.user.isAdmin){
@@ -60,7 +60,6 @@ export const createPost = asyncHandler(async (req, res, next)=>{
 
 })
 
-
 export const getPosts = asyncHandler(async (req, res, next) => {
     // console.log(req.query);
     // console.log(req)
@@ -114,7 +113,6 @@ export const getPosts = asyncHandler(async (req, res, next) => {
     }
 })
 
-
 export const deletePost = asyncHandler(async (req, res, next)=>{
   if(!req.user?.isAdmin){
     throw new apiError(400, "You are not authorised to delete the post.");
@@ -137,7 +135,6 @@ export const deletePost = asyncHandler(async (req, res, next)=>{
   console.log(req.user._id == req.params.userId);
   console.log(req.params);
 })
-
 
 export const updatePost = asyncHandler(async (req, res, next)=>{
   if(!req.user?.isAdmin){
