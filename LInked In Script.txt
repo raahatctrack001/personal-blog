@@ -1,81 +1,18 @@
-Introduction: 
-Thrilled to announce the completion of the backend development for 
-my latest project, a personal blog website! This project marks a 
-significant milestone in my journey as a full stack developer, 
-showcasing efforts in designing and implementing robust, 
-scalable, and efficient backend systems. 
-I meticulously crafted the backend architecture to ensure 
-seamless data management, user authentication, and content delivery.
-As this is merely a version 1 of backend API's.
-Through meticulous attention to detail and a passion for clean code, 
-I will optimized database queries, implemented RESTful APIs, and integrate
-essential security measures to safeguard user data. This project not 
-only demonstrates my technical proficiency but also underscores my 
-commitment to delivering high-quality solutions that exceed client 
-expectations. Excited to continue improving and integrating backend 
-development and eager to explore new opportunities to contribute my 
-skills and expertise to innovative projects.
+"Excited to unveil my latest achievement: completing the backend development for a cutting-edge personal blog website! This marks a pivotal moment in my journey as a full-stack developer, showcasing my prowess in crafting robust, scalable, and efficient backend systems. With meticulous attention to detail, I've ensured seamless data management, user authentication, and content delivery. But this is just the beginning. Version 1 is merely a glimpse of what's to come. I'm driven to optimize, implement, and integrate, ensuring top-notch quality and exceeding client expectations. Ready to elevate backend development and embrace new challenges head-on!"
 
 Tech Stack(in backend):
 Node.js
 Express.js
 MongoDB
 
-Dependencies (in backend):
-"bcryptjs": "^2.4.3", //for hashing and comparing password
-"cloudinary": "^2.1.0", //for file upload
-"cookie-parser": "^1.4.6", //for cookie parsing
-"cors": "^2.8.5",  //for restricting api access
-"dotenv": "^16.4.5", //handling sensitive information from getting exposed
-"express": "^4.19.2", //server
-"jsonwebtoken": "^9.0.2", //encoding and decoding tokens
-"mongoose": "^8.3.0", //database connection
-"multer": "^1.4.5-lts.1" //middleware for parsing multipart form data
-
-Dev Dependencies (in backend):
-"nodemon": "^3.1.0",
-"prettier": "^3.2.5"
-
-
-Data Modeling:
-1. User Model
-2. Post Model
-3. Comment Model
-
 **To be integrated in api v2**
 4. Tags/Categories
 5. Relationship
 6. Index
 
-Software Development Life Cycle(SDLC)
-Project management methodology used:
-In Version 1(dated 08 April 2024), waterfall model has catched my eyes for fast development of project.
-Planning -> Analysis -> Design -> Implementation (Coding) -> Testing -> Deployment -> Maintenance
-Project has been completed till Implementation phase, we are about to enter testing phase for backend.
+"Embarking on an exciting journey through the Software Development Life Cycle (SDLC)! Leveraging the waterfall model, Version 1 of our project has surged forward, swiftly progressing from planning to implementation. Now, as we prepare to enter the testing phase for the backend, our sights are set on elevating our approach. In future iterations, we're shifting gears to embrace agile Scrum methodology. While our project may not be sprawling, our commitment to excellence knows no bounds. It's time to revolutionize our process and deliver results the agile way!"
+"I've strategically structured my time to balance competitive programming on platforms like LeetCode and Codeforces with software development. Weekdays are dedicated to refining algorithmic skills, mastering data structures, and enhancing problem-solving abilities. Come weekends, I immerse myself in real-world software projects, designing, implementing, and refining solutions. This approach ensures a healthy equilibrium between honing technical skills and applying them in practical scenarios, fostering continuous growth as a software engineer."
 
-but in coming version of projects, we will try to Introduce agire scrum as our management methodology
-though project isn't large enough to adopt agile but let's do it the better way.
-
-Certainly! Here's how you can express your decision in technical terms:
-
-I've made a strategic decision to adopt a structured approach to 
-managing my time between competitive programming platforms like 
-LeetCode and Codeforces, and my software development activities. 
-To achieve a balanced utilization of my technical skills, 
-I've decided to allocate weekdays primarily to problem-solving 
-on platforms such as LeetCode and Codeforces. This allows me to 
-focus on honing my algorithmic problem-solving abilities, mastering
-data structures, and enhancing my problem-solving skills. 
-dedicating weekends to software development activities, 
-I ensure that I have uninterrupted blocks of time to immerse 
-myself in designing, implementing, and refining real-world software
-projects. This approach enables me to maintain a healthy balance 
-between improving my problem-solving capabilities and applying them 
-in practical software development scenarios, ultimately enhancing my
-overall proficiency as a software engineer.
-
-As i completed my backend code structure this weekend, hope to come up with frontend
-for the same project in coming weekend.
-Stay tuned!
+"Exciting news! Just wrapped up the backend structure for my latest project this weekend. Next up? Frontend development! I've attached the GitHub repository along with some code snippets for your review. Your feedback and suggestions are highly appreciated as I dive into the frontend realm. Stay tuned for more updates!"
 Thank you
 GitHub: https://github.com/raahatctrack001/personal-blog.git
