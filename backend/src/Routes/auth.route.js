@@ -12,7 +12,7 @@ const router = Router();
 
 router.route('/register').post(upload.none(),  registerUser)
 router.route('/login').post(upload.none(), loginUser);
-router.route('/delete-user').post(verifyUser, deleteUser)
+router.route('/delete-user').delete(verifyUser, deleteUser)
 router.route('/logout').post(verifyUser, logoutUser)
 
 

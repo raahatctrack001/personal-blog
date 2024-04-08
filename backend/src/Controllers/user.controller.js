@@ -152,6 +152,9 @@ export const getUser = asyncHandler(async (req, res, next)=>{
 })
 
 export const deleteUser = asyncHandler(async(req, res, next)=>{
+    if(!req.user.isAdmin){
+        throw new apiError(409, "only admin can delete a user")
+    }
     if(!req.params?.userId){
         throw new apiError("failed to get the details of user to be deleted.")
     }
@@ -166,6 +169,6 @@ export const deleteUser = asyncHandler(async(req, res, next)=>{
                 new apiResponse(200, "user deleted", {data: deleteUser})
             )
     } catch (error) {
-        return new apiError(errorr);
+        return new apiError(error);
     }
 })
