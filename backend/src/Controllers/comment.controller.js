@@ -121,3 +121,39 @@ export const updateComment = asyncHandler(async (req, res, next)=>{
         console.log(error);
     }
 })
+
+export const likeTheComment = asyncHandler(async (req, res, next)=>{
+    
+    // throw new apiError(500, "intentional termination for unit testing")
+    try {
+        const comment = await Comment.findById(req.params?.commentId)
+        if(!comment){
+            throw new apiError(400, "Comment not found");
+        }
+        
+        const index = comment.likes.indexOf(req.user?._id);
+        // console.log(index)
+        let todo;
+        if(index == -1){
+            todo = 1;
+        }
+        else{
+            todo = 0;
+        }
+        todo ? (await comment.likes.push(req.user)) : (await comment.likes.splice(index, 1));
+        await comment
+            .save()
+            .catch(error=>console.log(error));
+        
+        const likedComment = await Comment.findById(req.params?.commentId);
+        const likersCount = likedComment.likes.length;
+    
+        return res
+            .status(200)
+            .json(
+                new apiResponse(200, "liked comment", {likedComment, likersCount })
+            )
+    } catch (error) {
+        console.log(error)
+    }
+})
