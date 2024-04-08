@@ -21,7 +21,7 @@ app.use(cors(
 
 app.use(cookieParser());
 app.use(express.json({limit: "16kb"})); // to send json data
-app.use(express.urlencoded(   //to send urlencoded data like slud.includes(+, -) 
+app.use(express.urlencoded(   //to send urlencoded data like slug.includes(+, -) 
     {
         extended: true,
         limit: "16kb"

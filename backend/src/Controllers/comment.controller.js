@@ -78,3 +78,46 @@ export const deleteComment = asyncHandler(async (req, res, next)=>{
         console.log(error)
     }
 })
+
+export const updateComment = asyncHandler(async (req, res, next)=>{
+    // console.log(req.params)
+    // console.log("updating comments...")
+    // console.log(req.body)
+    
+    const {comment} = req.body;
+    console.log(comment)//must destructure otherwise string and object are diff
+    // throw new apiError(500, "intentional termination for unit testing")
+    
+    // console.log(req.user);
+    // console.log(req.params);
+    if(req.user?._id != req.params?.userId){
+        throw new apiError(409, "you can update only your comment");
+    }
+
+    try {
+        const updatedComment = await Comment.findByIdAndUpdate(
+            req.params?.commentId,
+            {
+                $set: {
+                    comment
+                },
+            },
+            {
+                new: true
+            }
+        );
+    
+        console.log(updatedComment);
+        if(!updatedComment){
+            throw new apiError(200, "Failed to update comment")
+        }
+    
+        return res  
+            .status(200)
+            .json(
+                new apiResponse(200, "comment updated", updatedComment)
+            )
+    } catch (error) {
+        console.log(error);
+    }
+})
