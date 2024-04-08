@@ -74,7 +74,7 @@ export const registerUser = asyncHandler(async (req, res, next)=>{
 })
 
 export const loginUser = asyncHandler(async (req, res, next)=>{
-    console.log(req.body)
+    // console.log(req.body)
     const {email, password} = req.body;
     if(
         [email, password].some(field=>field?.trim()?0:1)
@@ -86,8 +86,8 @@ export const loginUser = asyncHandler(async (req, res, next)=>{
     if(!currentUser){
         throw new apiError(409, "User doesn't exist");
     }
-    const hashedPassword = bcryptjs.hashSync(password, 10);
-    console.log(hashedPassword, currentUser?.password);
+    // const hashedPassword = bcryptjs.hashSync(password, 10);
+    // console.log(hashedPassword, currentUser?.password);
     const passwordValidation = bcryptjs.compareSync(password, currentUser?.password);
     if(!passwordValidation){
         throw new apiError(409, "Credentials didn't match.");
