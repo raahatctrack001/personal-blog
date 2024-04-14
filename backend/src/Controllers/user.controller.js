@@ -7,12 +7,12 @@ import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
 
 
 export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
-    console.log(req.file.path);
-    const profileLocalPath = req.file.path;
-    if(!profileLocalPath){
-        throw new apiError(400, "please select an image!")
-    }
     try {
+        console.log(req.file.path);
+        const profileLocalPath = req.file.path;
+        if(!profileLocalPath){
+            throw new apiError(409, "please select an image!")
+        }
         const response = await uploadOnCloudinary(profileLocalPath);
         if(!response){
             throw new apiError(500, "error uploading profile picutre");
@@ -51,42 +51,47 @@ export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
                 new apiResponse(200, "profile udpate SUCCESS", updatedUser)
             )
     } catch (error) {
-        console.log(error)
+        next(error);
+        // console.log(error)
     }
 })
 
 export const updateAccoutDetails = asyncHandler(async (req, res, next)=>{
     const {username, email, password} = req.body;
-    if(
-        [username, email, password].some(field=>field?.trim()?0:1)
-    ){
-        throw new apiError(409, "All fields are required");
-    }
-    const hashedPassword = bcryptjs.hashSync(password, 10);
-    const currentUser = await User.findByIdAndUpdate(
-        req.user?._id, {
-            $set: {
-                username,
-                email,
-                password: hashedPassword
-            },
-        },
-        {
-            new: true
-        }
-    ).select("-password -refreshToken");
-    if(!currentUser){
-        throw new apiError(500, "FAILED to update user!")
-    }
-    return res  
-            .status(200)
-            .json(
-                new apiResponse(200, "User update SUCCESS!", currentUser,)
-            )
+   try {
+     if(
+         [username, email, password].some(field=>field?.trim()?0:1)
+     ){
+         throw new apiError(409, "All fields are required");
+     }
+     const hashedPassword = bcryptjs.hashSync(password, 10);
+     const currentUser = await User.findByIdAndUpdate(
+         req.user?._id, {
+             $set: {
+                 username,
+                 email,
+                 password: hashedPassword
+             },
+         },
+         {
+             new: true
+         }
+     ).select("-password -refreshToken");
+     if(!currentUser){
+         throw new apiError(500, "FAILED to update user!")
+     }
+     return res  
+             .status(200)
+             .json(
+                 new apiResponse(200, "User update SUCCESS!", currentUser,)
+             )
+   } catch (error) {
+    next(error);
+   }
 })
 
 export const getAllUsers = asyncHandler(async (req, res, next) => {
-     if (!req.user.isAdmin) {
+    if (!req.user.isAdmin) {
         throw new apiError(403, "you are not allowed to c all users")
     }
      try {
@@ -124,8 +129,8 @@ export const getAllUsers = asyncHandler(async (req, res, next) => {
          lastMonthUsers,
        }));
      } catch (error) {
-        console.log(error);
-    //    next(error);
+        // console.log(error);
+       next(error);
      }
 });
    
@@ -142,23 +147,18 @@ export const getUser = asyncHandler(async (req, res, next)=>{
                new apiResponse(200, "user found", user)
            )
    } catch (error) { 
-     console.log(error);
-     return res
-     .status(200)
-     .json(
-         new apiError(404, "user not found", error)
-     )
+    next(error);
    }
 })
 
 export const deleteUser = asyncHandler(async(req, res, next)=>{
-    if(!req.user.isAdmin){
-        throw new apiError(409, "only admin can delete a user")
-    }
-    if(!req.params?.userId){
-        throw new apiError("failed to get the details of user to be deleted.")
-    }
     try {
+        if(!req.user.isAdmin){
+            throw new apiError(409, "only admin can delete a user")
+        }
+        if(!req.params?.userId){
+            throw new apiError("failed to get the details of user to be deleted.")
+        }
         const deletedUser = await User.findByIdAndDelete(req.params?.userId);
         if(!deleteUser){
             throw new apiError(500, "failed to delete user.")
@@ -169,6 +169,6 @@ export const deleteUser = asyncHandler(async(req, res, next)=>{
                 new apiResponse(200, "user deleted", {data: deleteUser})
             )
     } catch (error) {
-        return new apiError(error);
+        next(error)
     }
 })

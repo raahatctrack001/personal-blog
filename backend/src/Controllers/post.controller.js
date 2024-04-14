@@ -8,6 +8,7 @@ import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
 // import { resolve } from "path";
 
 export const createPost = asyncHandler(async (req, res, next)=>{
+  try{
     if(!req.user.isAdmin){
         throw new apiError(400, "Only Admins can create post. Request the ownerif you want to share your experience here.")
     }
@@ -22,7 +23,6 @@ export const createPost = asyncHandler(async (req, res, next)=>{
         throw new apiError(409, "All fields are necessary!");
     }
     let imageURL = null;
-    try{
         const localFilePath = req.file.path;
         if(localFilePath){
             const response = await uploadOnCloudinary(localFilePath);
@@ -42,7 +42,6 @@ export const createPost = asyncHandler(async (req, res, next)=>{
         if(!newPost){
             throw new apiError(500, "Error saving post at database!");
         }
-
         return res  
             .status(200)
             .json(
@@ -50,14 +49,8 @@ export const createPost = asyncHandler(async (req, res, next)=>{
             )
     }
     catch(error){
-        return res
-        .status(500)
-        .json(
-            new apiError(500, "error in creating post.", error)
-        )
+        next(error);
     }
-
-
 })
 
 export const getPosts = asyncHandler(async (req, res, next) => {
@@ -109,18 +102,19 @@ export const getPosts = asyncHandler(async (req, res, next) => {
           })
       );
     } catch (error) {
+      next(error);
       console.log(error)
     }
 })
 
 export const deletePost = asyncHandler(async (req, res, next)=>{
-  if(!req.user?.isAdmin){
-    throw new apiError(400, "You are not authorised to delete the post.");
-  }
-  if(req.params.userId != req.user?._id){
-    throw new apiError(400, "You can only delete your own posts.");
-  }
   try {
+      if(!req.user?.isAdmin){
+        throw new apiError(400, "You are not authorised to delete the post.");
+      }
+      if(req.params.userId != req.user?._id){
+        throw new apiError(400, "You can only delete your own posts.");
+      }
       const deletedPost = await Post.findByIdAndDelete(req.params.postId);
       return res
         .status(200)
@@ -128,30 +122,31 @@ export const deletePost = asyncHandler(async (req, res, next)=>{
           new apiResponse(200, "Post deleted", deletedPost)
         )   
   } catch (error) {
-    console.log(error)
+    next(error);
+    // console.log(error)
   }
 
-  console.log(req.user);
-  console.log(req.user._id == req.params.userId);
-  console.log(req.params);
+  // console.log(req.user);
+  // console.log(req.user._id == req.params.userId);
+  // console.log(req.params);
 })
 
 export const updatePost = asyncHandler(async (req, res, next)=>{
-  if(!req.user?.isAdmin){
-    throw new apiError(401, "only admin can alter the post");
-  }
+  try {
+    if(!req.user?.isAdmin){
+      throw new apiError(401, "only admin can alter the post");
+    }
 
-  if(req.params.userId != req.user?._id){
-    throw new apiError(409, "you can update only your posts.")
-  }
+    if(req.params.userId != req.user?._id){
+      throw new apiError(409, "you can update only your posts.")
+    }
 
-  const {title, content, category} = req.body;
-  if(
-    [title, content].some(field=>field?.trim()?0:1)
-  ){
-    throw new apiError(401, "all fields are required!");
-  }
-try {
+    const {title, content, category} = req.body;
+    if(
+      [title, content].some(field=>field?.trim()?0:1)
+    ){
+      throw new apiError(401, "all fields are required!");
+    }
   
     let imgURL = null;
     if(req.file){
@@ -181,6 +176,7 @@ try {
         new apiResponse(200, "post updated!", updatedPost)
       )
 } catch (error) {
-  console.log(error) 
+  next(error);
+  // console.log(error) 
 }
 })

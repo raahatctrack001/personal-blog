@@ -4,38 +4,44 @@ import  apiResponse from '../Utils/apiResponse.js';
 import Comment from '../Models/comment.model.js';
 import Post from '../Models/post.model.js';
 import User from '../Models/user.model.js';
+import { isError } from 'util';
 
-export const createComment = asyncHandler(async (req, res, _)=>{
+export const createComment = asyncHandler(async (req, res, next)=>{
     const { comment, postId, userId } = req.body;
-    if(req.user?._id != userId){
-        throw new apiError(409, "you are not allowed to comment. Please sign in.")
-    }
-    if(comment?.trim()?0:1){
-        return;
-    }
     try {
-        const post = await Post.findById(postId);
-        const author = await User.findById(userId).select("-password -refreshToken");
-        const newComment = await Comment.create({
-            comment,
-            post,
-            author,
-        });
-    if(!newComment){
-        throw new apiError(407, "FAILED to comment!")
-    }
-    return res
-        .status(200)
-        .json( 
-            new apiResponse(200, "comment added", newComment)
-        );
-        
+        if(req.user?._id != userId){
+            throw new apiError(409, "you are not allowed to comment. Please sign in.")
+        }
+        if(comment?.trim()?0:1){
+            return;
+        }
+        try {
+            const post = await Post.findById(postId);
+            const author = await User.findById(userId).select("-password -refreshToken");
+            const newComment = await Comment.create({
+                comment,
+                post,
+                author,
+            });
+        if(!newComment){
+            throw new apiError(407, "FAILED to comment!")
+        }
+        return res
+            .status(200)
+            .json( 
+                new apiResponse(200, "comment added", newComment)
+            );
+            
+        } catch (error) {
+            next(error)
+            console.log(error);
+        }
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 })
 
-export const commentsOnPost = asyncHandler(async (req, res, _)=>{
+export const commentsOnPost = asyncHandler(async (req, res, next)=>{
     const postId = req.params?.postId;
     try {
         const post = await Post.findById(postId);
@@ -53,33 +59,38 @@ export const commentsOnPost = asyncHandler(async (req, res, _)=>{
                 new apiResponse(200, "comments fetched", {comments, commentsCount})
             );
     } catch (error) {
+        next(error)
         console.log(error);
     }
 })
 
-export const deleteComment = asyncHandler(async (req, res, _)=>{
+export const deleteComment = asyncHandler(async (req, res, next)=>{
     console.log(req.params);
-    if(req.user?._id != req.params?.userId){
-        throw new apiError(409, "You can delete only your comments")
-    }
-    try {
-
-        const deletedComment = await Comment.findByIdAndDelete(req.params?.commentId);
-        console.log(deletedComment);
-        if(!deletedComment){
-            throw new apiError(409, "error deleting comment")
+    try {        
+        if(req.user?._id != req.params?.userId){
+            throw new apiError(409, "You can delete only your comments")
         }
-        return res  
-            .status(200)
-            .json(
-                new apiResponse(200, "comment deleted", deleteComment)
-            );
+        try {
+            const deletedComment = await Comment.findByIdAndDelete(req.params?.commentId);
+            console.log(deletedComment);
+            if(!deletedComment){
+                throw new apiError(409, "error deleting comment")
+            }
+            return res  
+                .status(200)
+                .json(
+                    new apiResponse(200, "comment deleted", deleteComment)
+                );
+        } catch (error) {
+            next(error)
+            console.log(error)
+        }
     } catch (error) {
-        console.log(error)
+        next(error);
     }
 })
 
-export const updateComment = asyncHandler(async (req, res, _)=>{
+export const updateComment = asyncHandler(async (req, res, next)=>{
     // console.log(req.params)
     // console.log("updating comments...")
     // console.log(req.body)
@@ -90,11 +101,11 @@ export const updateComment = asyncHandler(async (req, res, _)=>{
     
     // console.log(req.user);
     // console.log(req.params);
-    if(req.user?._id != req.params?.userId){
-        throw new apiError(409, "you can update only your comment");
-    }
-
     try {
+        if(req.user?._id != req.params?.userId){
+            throw new apiError(409, "you can update only your comment");
+        }
+
         const updatedComment = await Comment.findByIdAndUpdate(
             req.params?.commentId,
             {
@@ -118,11 +129,12 @@ export const updateComment = asyncHandler(async (req, res, _)=>{
                 new apiResponse(200, "comment updated", updatedComment)
             )
     } catch (error) {
+        next(error)
         console.log(error);
     }
 })
 
-export const likeTheComment = asyncHandler(async (req, res, _)=>{
+export const likeTheComment = asyncHandler(async (req, res, next)=>{
     
     // throw new apiError(500, "intentional termination for unit testing")
     try {
@@ -154,6 +166,7 @@ export const likeTheComment = asyncHandler(async (req, res, _)=>{
                 new apiResponse(200, "liked comment", {likedComment, likersCount })
             )
     } catch (error) {
+        next(error)
         console.log(error)
     }
 })

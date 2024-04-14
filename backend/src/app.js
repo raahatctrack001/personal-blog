@@ -36,6 +36,8 @@ import authRoute from "./Routes/auth.route.js";
 import userRouter from "./Routes/user.route.js";
 import postRouter from "./Routes/post.route.js";
 import commentRouter from "./Routes/comment.route.js";
+import apiResponse from "./Utils/apiResponse.js";
+import apiError from "./Utils/apiError.js";
 
 
 app.use("/api/v1/auth", authRoute);
@@ -44,5 +46,12 @@ app.use("/api/v1/post", postRouter);
 app.use("/api/v1/comment", commentRouter);
 
 
+app.use((err, req, res, next)=>{
+    res
+    .status(err.statusCode||500)
+    .json(
+        new apiResponse(err.statusCode||400, err.message||"something went wrong", null)
+    );
+});
 
 export default app;

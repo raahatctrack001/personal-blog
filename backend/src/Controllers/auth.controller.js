@@ -23,11 +23,11 @@ const generateAccessAndRefreshToken = async(userId) => {
             console.log('Tokens generated and added successfully!');
           })
         .catch(err => {
-            console.error('Error saving user:', err);
+            next(err)
           });
         return {accessToken, refreshToken};
     }catch(error){
-        throw new apiError(500, 'something went wrong while generating access and refresh token');
+        next(error);        
     }
 }
 
@@ -37,71 +37,79 @@ const options = {
 }
 export const registerUser = asyncHandler(async (req, res, next)=>{
     // console.log(req.body)
-    const {username, email, password} = req.body;
-    if(
-        [username, email, password].some(field=>field?.trim()?0:1)
-    ){
-        throw new apiError(400, "All fields are required!");
-    }
-
-    const isUserExists = await User.findOne(
-        {
-            $or: [{username}, {email}]
+    try {
+        const {username, email, password} = req.body;
+        if(
+            [username, email, password].some(field=>field?.trim()?0:1)
+        ){
+            throw new apiError(400, "All fields are required!");
         }
-    )
-
-    // console.log(isUserExists);
-
-    if(isUserExists){
-        throw new apiError(409, "USER with this credentials already EXISTS!");
-    }
     
-    const newUser = await User.create({
-        username,
-        email,
-        password
-    });
-    if(!newUser){
-        throw new apiError(500, "Something went WRONG! while registration.")
-    }
-     const data = await User.findById(newUser?._id).select("-password -refreshToken");
-    return res
-        .status(200)
-        .json(
-            new apiResponse(200,"User registration successfull.", data)
+        const isUserExists = await User.findOne(
+            {
+                $or: [{username}, {email}]
+            }
         )
+    
+        // console.log(isUserExists);
+    
+        if(isUserExists){
+            throw new apiError(409, "USER with this credentials already EXISTS!");
+        }
+        
+        const newUser = await User.create({
+            username,
+            email,
+            password
+        });
+        if(!newUser){
+            throw new apiError(500, "Something went WRONG! while registration.")
+        }
+        const data = await User.findById(newUser?._id).select("-password -refreshToken");
+        return res
+            .status(200)
+            .json(
+                new apiResponse(200,"User registration successfull.", data)
+            )
+    } catch (error) {
+        next(error);
+    }
 })
 
 export const loginUser = asyncHandler(async (req, res, next)=>{
     // console.log(req.body)
     const {email, password} = req.body;
-    if(
-        [email, password].some(field=>field?.trim()?0:1)
-    ){
-        throw new apiError(409, "All fields are required!");
+    try {
+        if(
+            [email, password].some(field=>field?.trim()?0:1)
+        ){
+            throw new apiError(409, "All fields are required!");
+        }
+    
+        const currentUser = await User.findOne({email});
+        if(!currentUser){
+            throw new apiError(409, "User doesn't exist");
+        }
+        // const hashedPassword = bcryptjs.hashSync(password, 10);
+        // console.log(hashedPassword, currentUser?.password);
+        const passwordValidation = bcryptjs.compareSync(password, currentUser?.password);
+        if(!passwordValidation){
+            throw new apiError(409, "Credentials didn't match.");
+        }
+    
+        const {accessToken, refreshToken} = await generateAccessAndRefreshToken(currentUser?._id);
+        const loggedInUser = await User.findById(currentUser?._id).select("-password -refreshToken");
+    
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json(
+                new apiResponse(200, "Login Successful!", {user: loggedInUser, accessToken, refreshToken})
+            );  
+    } catch (error) {
+        next(error);
     }
-
-    const currentUser = await User.findOne({email});
-    if(!currentUser){
-        throw new apiError(409, "User doesn't exist");
-    }
-    // const hashedPassword = bcryptjs.hashSync(password, 10);
-    // console.log(hashedPassword, currentUser?.password);
-    const passwordValidation = bcryptjs.compareSync(password, currentUser?.password);
-    if(!passwordValidation){
-        throw new apiError(409, "Credentials didn't match.");
-    }
-
-    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(currentUser?._id);
-    const loggedInUser = await User.findById(currentUser?._id).select("-password -refreshToken");
-
-    return res
-        .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
-        .json(
-            new apiResponse(200, "Login Successful!", {user: loggedInUser, accessToken, refreshToken})
-        );  
 })
 
 //to do's
@@ -128,33 +136,38 @@ export const deleteUser = asyncHandler(async (req, res, next)=>{
                 new apiResponse(200, "User Deleted", null)
             )
     } catch (error) {
+        next(error)
         console.log(error)
     }
     
 })
 
 export const logoutUser = asyncHandler(async (req, res, next)=>{
-    const updatedUser = await User.findByIdAndUpdate(
-        req.user?._id,
-        {
-            $set: {
-                refreshToken: 1,
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                $set: {
+                    refreshToken: 1,
+                }
+            },
+            {
+                new: true,
             }
-        },
-        {
-            new: true,
+        );
+        if(!updatedUser){
+            throw new apiError(500, "Unable si logout User!");
         }
-    );
-    if(!updatedUser){
-        throw new apiError(500, "Unable si logout User!");
+    
+        return res
+            .status(200)
+            .clearCookie("accessToken", options)
+            .clearCookie("refreshToken", options)
+            .json(
+                new apiResponse(200, "User Logged out", null)
+            )
+    } catch (error) {
+        next(error)
     }
-
-    return res
-        .status(200)
-        .clearCookie("accessToken", options)
-        .clearCookie("refreshToken", options)
-        .json(
-            new apiResponse(200, "User Logged out", null)
-        )
 
 })
