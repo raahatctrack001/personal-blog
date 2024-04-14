@@ -1,26 +1,42 @@
-import { Button, Label, TextInput } from 'flowbite-react'
+import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { AiOutlineEyeInvisible } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const SignUp = () => {
+  const naviagate = useNavigate();
   const [formData, setFormData] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleChange = (event)=>{
     setFormData({...formData, [event.target.id]: event.target.value});
   }
   const handleSubmit = async(event)=>{
       event.preventDefault();
       try{
-        const res = await fetch("/api/v1/auth/register", {
+        setLoading(true);
+        setErrorMessage(null);
+        const res = await fetch('/api/v1/auth/register', {
           method: 'POST',
-          headers: {"Content-Type": "application/json"},
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
         });
-        console.log(res);
-        const data = res.json();
-        console.log(data);
+        
+        const data = await res.json();
+        // console.log(data)
+        if(data.success == false){
+          setErrorMessage(data.message)
+        }
+        setLoading(false)
+        if(res.ok){
+          setLoading(false);
+          setErrorMessage(null);
+          naviagate('/sign-in')
+        }
       }catch(error){
-        console.log(error)
+        setLoading(false);
+        setErrorMessage(error.message||"can't reach api route!")
       }
 
   }
@@ -49,7 +65,7 @@ const SignUp = () => {
             />
             <Label className='pl-1'> Your email </Label>
             <TextInput 
-              type='text'
+              type='email'
               placeholder='name@provider.com'
               id='email'
               onChange={handleChange}
@@ -62,9 +78,17 @@ const SignUp = () => {
               rightIcon={AiOutlineEyeInvisible}
               onChange={handleChange}
             />
-            <Button className='w-full mt-2 bg-green-100 text-green-800 hover:text-white'  type='submit' > Sign Up</Button>
-          </form>        
+            <Button className='w-full mt-2 bg-green-100 text-green-800 hover:text-white' type='submit'
+            disabled = {loading} >
+              {loading ?  <><Spinner /> <p className='pl-3'> loading... </p></>: <p>Sign Up</p> }
+            </Button>
+          </form>   
           <p className='mt-3'> Already have an acoount? <span> <Link to={'/sign-in'} className='text-blue-500'> Sign In </Link></span></p>
+          {errorMessage && (
+            <Alert className='mt-5' color='failure'>
+              {errorMessage}
+            </Alert>)}
+
 
         </div>
       </div>
