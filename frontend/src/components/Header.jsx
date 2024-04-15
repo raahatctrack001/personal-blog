@@ -1,13 +1,17 @@
-import { Button, Navbar, TextInput } from 'flowbite-react'
+import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react'
 import React from 'react'
 import { AiOutlineInsertRowAbove, AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { Link, useLocation } from 'react-router-dom';
-
+import { useSelector } from 'react-redux'
 
 
 const header = () => {
   const path = useLocation().pathname;
+  const { currentUser: firstUser } = useSelector(state => state.user);
+  const currentUser = firstUser.data.user;
+  console.log(currentUser)
+  
   return (
     <Navbar className='border-b-2 bg-gray-200 text-gray-800 md:text-lg font-semibold'>
       <Link to={'/'}>
@@ -23,9 +27,39 @@ const header = () => {
       <Button outline className='h-10 bg-green-500 md:hidden'> <AiOutlineSearch /> </Button>
       <div className='flex gap-2 md:order-2'>
         <Button outline className='w-14 h-10 bg-green-500'> <FaMoon/> </Button>
-        <Link to={'/sign-in'}>
-          <Button outline className='h-10 bg-green-500 text-green-800'> Sign In </Button>
-        </Link>
+        {
+          currentUser ? 
+          ( 
+            <Dropdown
+            arrowIcon={false}
+            inline
+            label={<Avatar 
+              className='rounded-full' 
+              alt="Remy Sharp" 
+              src={currentUser.photoURL} 
+              rounded
+            />}
+            >
+              <Dropdown.Header>
+                <span className='block text-sm'>{currentUser.username}</span>
+                <span className='block text-sm font-medium truncate'>{currentUser.email}</span>
+              </Dropdown.Header>
+              <Dropdown.Item>
+                Profile
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item>
+                Sign Out
+              </Dropdown.Item>
+            </Dropdown>
+          ) : 
+          (
+            <Link to={'/sign-in'}>
+              <Button outline className='h-10 bg-green-500 text-green-800'> Sign In </Button>
+            </Link>
+        )
+        }
+        
         <Navbar.Toggle />
       </div>
 
