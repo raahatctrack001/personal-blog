@@ -105,7 +105,7 @@ export const loginUser = asyncHandler(async (req, res, next)=>{
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
             .json(
-                new apiResponse(200, "Login Successful!", {user: loggedInUser, accessToken, refreshToken})
+                new apiResponse(200, "Login Successful!", loggedInUser)
             );  
     } catch (error) {
         next(error);
@@ -190,7 +190,7 @@ export const continueWithGoogle = asyncHandler(async (req, res, next)=>{
                 .cookie("accessToken", accessToken, options)
                 .cookie("refreshToken", refreshToken, options)
                 .json(
-                    new apiResponse(200, "Login Successful!", {user: isUserExist, accessToken, refreshToken})
+                    new apiResponse(200, "Login Successful!", isUserExist)
                 );     
         }
         else{
@@ -216,7 +216,7 @@ export const continueWithGoogle = asyncHandler(async (req, res, next)=>{
                 .cookie('accessToken', accessToken, options)
                 .cookie('refreshToken', refreshToken, options)
                 .json(
-                    new apiResponse(200, 'user created!', {savedUser, accessToken, refreshToken})
+                    new apiResponse(200, 'user created!', savedUser)
                 )
         }
     }catch (error) {

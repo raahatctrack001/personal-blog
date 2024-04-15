@@ -2,9 +2,11 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './user/userSlice'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
+import themeReducers from './theme/themeReducers'
 
 const rootReducer = combineReducers({
-    user: userReducer
+    user: userReducer,
+    theme: themeReducers
 })
 
 const persistConfig = {

@@ -52,9 +52,9 @@ const SignUp = () => {
   }
   return (
     <div className='min-h-screen mt-20'>
-      <div className='flex flex-col md:flex-row gap-5 max-w-3xl md:items-center mx-auto'>
+      <div className='flex flex-col md:flex-row gap-10 max-w-3xl md:items-center mx-auto'>
         {/* left */}
-        <div className='p-3 md:p-16 rounded-xl flex-1 bg-gray-100 text-gray-800'> 
+        <div className='p-3 md:p-16 rounded-xl flex-1 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'> 
           <Link to={'/'}>
             <div className=''> 
               <span className='text-3xl font-bold'> Raahat's  Blog </span> 
@@ -88,7 +88,7 @@ const SignUp = () => {
               rightIcon={AiOutlineEyeInvisible}
               onChange={handleChange}
             />
-            <Button className='w-full mt-2 bg-green-100 text-green-800 hover:text-white' type='submit'
+            <Button className='w-full mt-2' type='submit'
             disabled = {loading} >
               {loading ?  <><Spinner /> <p className='pl-3'> loading... </p></>: <p>Sign Up</p> }
             </Button>

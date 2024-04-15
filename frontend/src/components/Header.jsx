@@ -4,18 +4,22 @@ import { AiOutlineInsertRowAbove, AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux';
+import { toggleTheme } from '../redux/theme/themeReducers';
 
 
 const header = () => {
   const path = useLocation().pathname;
-  const { currentUser: firstUser } = useSelector(state => state.user);
-  const currentUser = firstUser.data.user;
-  console.log(currentUser)
-  
+  const dispatch = useDispatch();
+  const { currentUser: user } = useSelector(state => state.user);
+  const currentUser = user?.data;
+  const { theme } = useSelector(state=>state?.theme)
+  // console.log(theme)
+  // 
   return (
-    <Navbar className='border-b-2 bg-gray-200 text-gray-800 md:text-lg font-semibold'>
+    <Navbar className='border-b-2 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 md:text-lg font-semibold'>
       <Link to={'/'}>
-        <div className='bg-white shadow-2xl p-1 rounded-lg'> <span className='self-center whitespace-nowrap'> Raahat's </span> Blog </div>
+        <div className='p-1 rounded-lg'> <span className='self-center whitespace-nowrap'> Raahat's </span> Blog </div>
       </Link>
       <form>
         <TextInput 
@@ -26,7 +30,11 @@ const header = () => {
       </form>
       <Button outline className='h-10 bg-green-500 md:hidden'> <AiOutlineSearch /> </Button>
       <div className='flex gap-2 md:order-2'>
-        <Button outline className='w-14 h-10 bg-green-500'> <FaMoon/> </Button>
+        <Button 
+        outline 
+        className='w-14 h-10 bg-green-500'
+        onClick={()=>dispatch(toggleTheme())}
+        > {theme === 'light' ? (<FaMoon className='text-gray-800'/>) : (<FaSun />)} </Button>
         {
           currentUser ? 
           ( 
