@@ -4,7 +4,8 @@ import { AiOutlineEyeInvisible } from 'react-icons/ai'
 import { Link, useResolvedPath, useRevalidator } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
-import { signInStart, SignInFailure, SignInSuccess } from '../redux/user/userSlice'
+import { SignInStart, SignInFailure, SignInSuccess } from '../redux/user/userSlice'
+import Oauth from '../components/Oauth'
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const SignUp = () => {
       try{
         // setLoading(true);
         // setErrorMessage(null);
-        dispatch(signInStart());
+        dispatch(SignInStart());
         const res = await fetch('/api/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -91,7 +92,8 @@ const SignUp = () => {
             disabled = {loading} >
               {loading ?  <><Spinner /> <p className='pl-3'> loading... </p></>: <p>Sign Up</p> }
             </Button>
-          </form>   
+          </form>
+           <Oauth />
           <p className='mt-3'> Already have an acoount? <span> <Link to={'/sign-in'} className='text-blue-500'> Sign In </Link></span></p>
           {errorMessage && (
             <Alert className='mt-5' color='failure'>

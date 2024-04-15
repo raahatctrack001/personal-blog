@@ -10,7 +10,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    signInStart: (state) => {
+    SignInStart: (state) => {
       state.error = null,
       state.loading = true
     },
@@ -26,6 +26,6 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { signInStart, SignInSuccess, SignInFailure } = userSlice.actions
+export const { SignInStart, SignInSuccess, SignInFailure } = userSlice.actions
 
 export default userSlice.reducer

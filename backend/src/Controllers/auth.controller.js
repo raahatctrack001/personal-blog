@@ -1,8 +1,8 @@
-import asyncHandler from "../Utils/asyncHandler.js"
+import asyncHandler from "../Utils/asyncHandler.js";
 import apiError from "../Utils/apiError.js";
 import User from "../Models/user.model.js";
 import apiResponse from "../Utils/apiResponse.js";
-import bcryptjs from 'bcryptjs'
+import bcryptjs from 'bcryptjs';
 import dotenv from "dotenv";
 
 dotenv.config(
@@ -170,4 +170,57 @@ export const logoutUser = asyncHandler(async (req, res, next)=>{
         next(error)
     }
 
+})
+
+export const continueWithGoogle = asyncHandler(async (req, res, next)=>{
+    // console.log(req.body)
+    const {name, email, googlePhotoURL} = req.body;
+    try {
+        const isUserExist = await User.findOne({email})?.select("-password -refreshToken");
+        console.log('alreadyexists', isUserExist)
+        if(isUserExist){
+            const {accessToken, refreshToken} = await generateAccessAndRefreshToken(isUserExist?._id);
+            
+            if(!accessToken || !refreshToken){
+                throw new apiError(400, "Failed to created tokens!");
+            }
+
+            return res
+                .status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options)
+                .json(
+                    new apiResponse(200, "Login Successful!", {user: isUserExist, accessToken, refreshToken})
+                );     
+        }
+        else{
+            const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+            const generatedUsername = name.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4);
+            
+            const newUser = await User.create({
+                username: generatedUsername,
+                password: hashedPassword,
+                photoURL: googlePhotoURL,
+                email,
+            })?.select("-password");
+
+            if(!newUser){
+                throw new apiError(400, "failed to save data in database!")
+            }
+            const {accessToken, refreshToken} = await generateAccessAndRefreshToken(newUser?._id);
+            const savedUser = await User.find(newUser?._id).select("-password -refreshToken");
+
+            return res
+                .status(200)
+                .cookie('accessToken', accessToken, options)
+                .cookie('refreshToken', refreshToken, options)
+                .json(
+                    new apiResponse(200, 'user created!', {savedUser, accessToken, refreshToken})
+                )
+        }
+    }catch (error) {
+        console.log(error)
+        next(error);
+    }
 })

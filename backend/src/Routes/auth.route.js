@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { 
+    continueWithGoogle,
     deleteUser,
     loginUser, 
     logoutUser, 
@@ -14,6 +15,7 @@ router.route('/register').post(upload.none(),  registerUser)
 router.route('/login').post(upload.none(), loginUser);
 router.route('/delete-user').delete(verifyUser, deleteUser)
 router.route('/logout').post(verifyUser, logoutUser)
+router.route('/google').post(continueWithGoogle);
 
 
 

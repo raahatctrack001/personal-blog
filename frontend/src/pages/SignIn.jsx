@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { AiOutlineEyeInvisible } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import Oauth from '../components/Oauth'
 
 const SignIn = () => {
   const naviagate = useNavigate();
@@ -77,6 +78,7 @@ const SignIn = () => {
               {loading ?  <><Spinner /> <p className='pl-3'> loading... </p></>: <p>Sign In</p> }
             </Button>
           </form>   
+          <Oauth />
           <p className='mt-3'> Don't have an acoount? <span> <Link to={'/sign-up'} className='text-blue-500'> Sign up </Link></span></p>
           {errorMessage && (
             <Alert className='mt-5' color='failure'>
