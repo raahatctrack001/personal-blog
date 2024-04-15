@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { AiOutlineEyeInvisible } from 'react-icons/ai'
 import { Link, useResolvedPath, useRevalidator } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import {signInStart, signInSuccess, SignInFailure } from '../redux/userSlice'
 import {useDispatch, useSelector} from 'react-redux'
+import { signInStart, SignInFailure, SignInSuccess } from '../redux/user/userSlice'
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ const SignUp = () => {
         if(res.ok){
           // setLoading(false);
           // setErrorMessage(null);
-          dispatch(signInSuccess(data));
+          dispatch(SignInSuccess(data));
           naviagate('/sign-in')
         }
       }catch(error){
