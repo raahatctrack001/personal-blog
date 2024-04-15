@@ -1,14 +1,16 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { AiOutlineEyeInvisible } from 'react-icons/ai'
-import { Link, useRevalidator } from 'react-router-dom'
+import { Link, useResolvedPath, useRevalidator } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import {signInStart, signInSuccess, SignInFailure } from '../redux/userSlice'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const naviagate = useNavigate();
+  const {user} = useSelector(state=>state.user)
+  console.log(user)
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
