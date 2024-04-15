@@ -23,7 +23,9 @@ const header = () => {
       <Button outline className='h-10 bg-green-500 md:hidden'> <AiOutlineSearch /> </Button>
       <div className='flex gap-2 md:order-2'>
         <Button outline className='w-14 h-10 bg-green-500'> <FaMoon/> </Button>
-        <Button outline className='h-10 bg-green-500 text-green-800'> Sign In </Button>
+        <Link to={'/sign-in'}>
+          <Button outline className='h-10 bg-green-500 text-green-800'> Sign In </Button>
+        </Link>
         <Navbar.Toggle />
       </div>
 
