@@ -63,7 +63,7 @@ export default function FooterCom() {
         <div className='w-full sm:flex sm:items-center sm:justify-between'>
           <Footer.Copyright
             href='#'
-            by="Sahand's blog"
+            by="Raahat's blog"
             year={new Date().getFullYear()}
           />
           <div className="flex gap-6 sm:mt-0 mt-4 sm:justify-center">
@@ -72,7 +72,6 @@ export default function FooterCom() {
             <Footer.Icon href='#' icon={BsTwitter}/>
             <Footer.Icon href='https://github.com/raahatctrack001' icon={BsGithub}/>
             <Footer.Icon href='#' icon={BsDribbble}/>
-
           </div>
         </div>
       </div>

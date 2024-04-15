@@ -1,10 +1,13 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { AiOutlineEyeInvisible } from 'react-icons/ai'
-import { Link } from 'react-router-dom'
+import { Link, useRevalidator } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import {signInStart, signInSuccess, SignInFailure } from '../redux/userSlice'
+import {useDispatch} from 'react-redux'
 
 const SignUp = () => {
+  const dispatch = useDispatch();
   const naviagate = useNavigate();
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
@@ -15,8 +18,9 @@ const SignUp = () => {
   const handleSubmit = async(event)=>{
       event.preventDefault();
       try{
-        setLoading(true);
-        setErrorMessage(null);
+        // setLoading(true);
+        // setErrorMessage(null);
+        dispatch(signInStart());
         const res = await fetch('/api/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -26,17 +30,20 @@ const SignUp = () => {
         const data = await res.json();
         // console.log(data)
         if(data.success == false){
+          dispatch(SignInFailure(data.message));
           setErrorMessage(data.message)
         }
         setLoading(false)
         if(res.ok){
-          setLoading(false);
-          setErrorMessage(null);
+          // setLoading(false);
+          // setErrorMessage(null);
+          dispatch(signInSuccess(data));
           naviagate('/sign-in')
         }
       }catch(error){
-        setLoading(false);
-        setErrorMessage(error.message||"can't reach api route!")
+        dispatch(SignInFailure(error.message))
+        // setLoading(false);
+        // setErrorMessage(error.message||"can't reach api route!")
       }
 
   }
