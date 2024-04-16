@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 
 
 export const verifyUser = asyncHandler(async (req, res, next)=>{
-    // console.log(req.cookies);
+    console.log(req.Cookies)
     try {
         const accessToken = req.cookies?.accessToken;
         if(!accessToken){
@@ -24,6 +24,7 @@ export const verifyUser = asyncHandler(async (req, res, next)=>{
         req.user = currentUser;
         next();  
     } catch (error) {
+        next(error)
         console.log(error);
     }
 })

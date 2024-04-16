@@ -63,7 +63,7 @@ const header = () => {
           ) : 
           (
             <Link to={'/sign-in'}>
-              <Button outline className='h-10 bg-green-500 text-green-800'> Sign In </Button>
+              <Button outline className='h-10'> Sign In </Button>
             </Link>
         )
         }

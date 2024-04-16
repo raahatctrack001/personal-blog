@@ -99,7 +99,9 @@ export const loginUser = asyncHandler(async (req, res, next)=>{
     
         const {accessToken, refreshToken} = await generateAccessAndRefreshToken(currentUser?._id);
         const loggedInUser = await User.findById(currentUser?._id).select("-password -refreshToken");
-    
+        
+        // console.log("accessToken: ", accessToken)
+        // console.log("refreshToken: ", refreshToken)
         return res
             .status(200)
             .cookie("accessToken", accessToken, options)
@@ -156,7 +158,7 @@ export const logoutUser = asyncHandler(async (req, res, next)=>{
             }
         );
         if(!updatedUser){
-            throw new apiError(500, "Unable si logout User!");
+            throw new apiError(500, "Unable to logout User!");
         }
     
         return res
@@ -210,7 +212,7 @@ export const continueWithGoogle = asyncHandler(async (req, res, next)=>{
             }
             const {accessToken, refreshToken} = await generateAccessAndRefreshToken(newUser?._id);
             const savedUser = await User.find(newUser?._id).select("-password -refreshToken");
-
+            console.log('newUser: ', savedUser);
             return res
                 .status(200)
                 .cookie('accessToken', accessToken, options)
@@ -220,7 +222,7 @@ export const continueWithGoogle = asyncHandler(async (req, res, next)=>{
                 )
         }
     }catch (error) {
-        console.log(error)
+        // console.log(error)
         next(error);
     }
 })

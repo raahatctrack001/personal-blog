@@ -21,9 +21,9 @@ const SignUp = () => {
   const handleSubmit = async(event)=>{
       event.preventDefault();
       try{
-        // setLoading(true);
-        // setErrorMessage(null);
-        dispatch(SignInStart());
+        setLoading(true);
+        setErrorMessage(null);
+        // dispatch(SignInStart());
         const res = await fetch('/api/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -33,20 +33,20 @@ const SignUp = () => {
         const data = await res.json();
         // console.log(data)
         if(data.success == false){
-          dispatch(SignInFailure(data.message));
+          // dispatch(SignInFailure(data.message));
           setErrorMessage(data.message)
         }
         setLoading(false)
         if(res.ok){
-          // setLoading(false);
-          // setErrorMessage(null);
-          dispatch(SignInSuccess(data));
+          setLoading(false);
+          setErrorMessage(null);
+          // dispatch(SignInSuccess(data));
           naviagate('/sign-in')
         }
       }catch(error){
-        dispatch(SignInFailure(error.message))
-        // setLoading(false);
-        // setErrorMessage(error.message||"can't reach api route!")
+        // dispatch(SignInFailure(error.message))
+        setLoading(false);
+        setErrorMessage(error.message||"can't reach api route!")
       }
 
   }
@@ -65,29 +65,35 @@ const SignUp = () => {
 
         {/* right  */}
         <div className='flex-1'>
-          <form onSubmit={handleSubmit}>
-            <Label className='pl-1'> Your username </Label>
-            <TextInput 
-              type='text'
-              placeholder='username'
-              id='username'
-              onChange={handleChange}
-            />
-            <Label className='pl-1'> Your email </Label>
-            <TextInput 
-              type='email'
-              placeholder='name@provider.com'
-              id='email'
-              onChange={handleChange}
-            />
-            <Label className='pl-1'> Your password </Label>
-            <TextInput 
-              type='password'
-              placeholder='*********'
-              id='password'
-              rightIcon={AiOutlineEyeInvisible}
-              onChange={handleChange}
-            />
+          <form className='flex flex-col gap-3' onSubmit={handleSubmit}>
+            <div>
+              <Label className='pl-1'> Your username </Label>
+              <TextInput 
+                type='text'
+                placeholder='username'
+                id='username'
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label className='pl-1'> Your email </Label>
+              <TextInput 
+                type='email'
+                placeholder='name@provider.com'
+                id='email'
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label className='pl-1'> Your password </Label>
+              <TextInput 
+                type='password'
+                placeholder='*********'
+                id='password'
+                rightIcon={AiOutlineEyeInvisible}
+                onChange={handleChange}
+              />
+            </div>
             <Button className='w-full mt-2' type='submit'
             disabled = {loading} >
               {loading ?  <><Spinner /> <p className='pl-3'> loading... </p></>: <p>Sign Up</p> }

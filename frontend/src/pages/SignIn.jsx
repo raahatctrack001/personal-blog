@@ -4,7 +4,7 @@ import { AiOutlineEyeInvisible } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Oauth from '../components/Oauth'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { SignInFailure, SignInStart, SignInSuccess } from '../redux/user/userSlice'
 
 const SignIn = () => {
@@ -19,7 +19,7 @@ const SignIn = () => {
   const handleSubmit = async(event)=>{
       event.preventDefault();
       try{
-        // setLoading(true);
+        setLoading(true);
         // setErrorMessage(null);
         dispatch(SignInStart());
         const res = await fetch('/api/v1/auth/login', {
@@ -34,16 +34,16 @@ const SignIn = () => {
           dispatch(SignInFailure(data.message))
           // setErrorMessage(data.message)
         }
-        // setLoading(false)
+        setLoading(false)
         if(res.ok){
           dispatch(SignInSuccess(data))
-          // setLoading(false);
+          setLoading(false);
           // setErrorMessage(null);
           naviagate('/project')
         }
       }catch(error){
         dispatch(SignInFailure(error.message))
-        // setLoading(false);
+        setLoading(false);
         // setErrorMessage(error.message||"can't reach api route!")
       }
 
@@ -63,24 +63,27 @@ const SignIn = () => {
 
         {/* right  */}
         <div className='flex-1'>
-          <form onSubmit={handleSubmit}>
-            
-            <Label className='pl-1'> Your email </Label>
-            <TextInput 
-              type='email'
-              placeholder='name@provider.com'
-              id='email'
-              onChange={handleChange}
-            />
-            <Label className='pl-1'> Your password </Label>
-            <TextInput 
-              type='password'
-              placeholder='*********'
-              id='password'
-              rightIcon={AiOutlineEyeInvisible}
-              onChange={handleChange}
-            />
-            <Button className='w-full mt-2 bg-green-100 text-green-800 hover:text-white' type='submit'
+        <form className='flex flex-col gap-3' onSubmit={handleSubmit}>
+            <div>
+              <Label className='pl-1'> Your email </Label>
+              <TextInput 
+                type='email'
+                placeholder='name@provider.com'
+                id='email'
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label className='pl-1'> Your password </Label>
+              <TextInput 
+                type='password'
+                placeholder='*********'
+                id='password'
+                rightIcon={AiOutlineEyeInvisible}
+                onChange={handleChange}
+              />
+            </div>
+            <Button className='w-full mt-2' outline type='submit'
             disabled = {loading} >
               {loading ?  <><Spinner /> <p className='pl-3'> loading... </p></>: <p>Sign In</p> }
             </Button>

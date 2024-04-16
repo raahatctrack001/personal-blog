@@ -11,7 +11,7 @@ export default function FooterCom() {
               to='/'
               className='self-center whitespace-nowrap text-lg sm:text-xl font-semibold dark:text-white'
             >
-              <span className='px-2 py-1 rounded-lg text-gray-800'>
+              <span className='px-2 py-1 rounded-lg'>
                 Raahat's
               </span>
               Blog
