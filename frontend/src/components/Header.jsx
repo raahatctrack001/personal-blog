@@ -52,9 +52,11 @@ const header = () => {
                 <span className='block text-sm'>{currentUser.username}</span>
                 <span className='block text-sm font-medium truncate'>{currentUser.email}</span>
               </Dropdown.Header>
-              <Dropdown.Item>
-                Profile
-              </Dropdown.Item>
+              <Link to={'/dashboard?tab=profile'}>
+                <Dropdown.Item>
+                  Profile
+                </Dropdown.Item>
+              </Link>
               <Dropdown.Divider />
               <Dropdown.Item>
                 Sign Out

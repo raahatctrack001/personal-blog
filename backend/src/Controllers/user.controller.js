@@ -7,9 +7,11 @@ import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
 
 
 export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
+    console.log('body', req.body)
+    console.log('file', req.file);
     try {
-        console.log(req.file.path);
         const profileLocalPath = req.file.path;
+        // console.log("profile pic is here", profileLocalPath)
         if(!profileLocalPath){
             throw new apiError(409, "please select an image!")
         }
@@ -17,7 +19,7 @@ export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
         if(!response){
             throw new apiError(500, "error uploading profile picutre");
         }
-        console.log(response);  
+        // console.log(response);  
         const currentUser = await User.findById(req.user?._id).select("-password -refreshToken");
         if(!currentUser){
             throw new apiError(500, "Failed to upload profile image.")
@@ -44,7 +46,7 @@ export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
         if(!updatedUser){
             throw new apiError(500, "failed to update data base");
         }
-        console.log(updatedUser);
+        // console.log(updatedUser);
         return res
             .status(200)
             .json(
