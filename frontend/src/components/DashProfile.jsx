@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { TextInput, Button, Label } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { updateFailure, updateStart, updateSuccess } from '../redux/user/userSlice';
+import { 
+  SignOutSuccess, 
+  updateFailure, 
+  updateStart, 
+  updateSuccess 
+} from '../redux/user/userSlice';
 
 const DashProfile = () => {
   const dispatch = useDispatch();
@@ -14,6 +19,7 @@ const DashProfile = () => {
   // const [currentProfileURL, setCurrentProfileURL] = useState(currentUser.photoURL);
   const [formData, setFormData] = useState({});
 
+  /********************** profile picture update function *****************************/
   const updateProfile = async (file)=>{
     try {
       dispatch(updateStart())
@@ -43,6 +49,8 @@ const DashProfile = () => {
     setFormData({...formData, [e.target.id]: e.target.value})    
   }
  
+
+  /*************************account detail update functionality******************************** */
   const handleSubmit = async (e)=>{
     e.preventDefault();
     try {
@@ -54,12 +62,30 @@ const DashProfile = () => {
       });
 
       const data = await res.json();
-      console.log(data); 
+      console.log('updated Details', data); 
       
     } catch (error) {
       console.log(error)
     }
   }
+
+  /***************************handle signout functionaity*********************/
+  const handleSignout = async () => {
+    try {
+      const res = await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+      });
+      const data = await res.json();
+    //   console.log(data);
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(SignOutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
  
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
@@ -107,7 +133,7 @@ const DashProfile = () => {
         <Button
           type='submit'
           gradientDuoTone='purpleToBlue'
-          outline> Update
+          outline> working on update function
         </Button>
         {currentUser.isAdmin && (
           <Link to={'/create-post'}>
@@ -125,7 +151,7 @@ const DashProfile = () => {
         <span className='cursor-pointer'>
           Delete Account
         </span>
-        <span className='cursor-pointer'>
+        <span className='cursor-pointer' onClick={handleSignout}>
           Sign Out
         </span>
       </div>

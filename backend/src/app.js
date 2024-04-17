@@ -37,7 +37,6 @@ import userRouter from "./Routes/user.route.js";
 import postRouter from "./Routes/post.route.js";
 import commentRouter from "./Routes/comment.route.js";
 import apiResponse from "./Utils/apiResponse.js";
-import apiError from "./Utils/apiError.js";
 
 
 app.use("/api/v1/auth", authRoute);

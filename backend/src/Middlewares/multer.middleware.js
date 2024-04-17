@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
       cb(null, file.fieldname + '-' + uniqueSuffix)
     },
     destination: function (req, file, cb) {
-      console.log("inside multer:")
+      // console.log("inside multer:")
       cb(null, 'public/files')
     }
   })

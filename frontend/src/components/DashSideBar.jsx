@@ -30,13 +30,14 @@ export default function DashSidebar() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+
   const handleSignout = async () => {
     try {
       const res = await fetch('/api/v1/auth/logout', {
         method: 'POST',
       });
       const data = await res.json();
-    //   console.log(data);
+      console.log(data);
       if (!res.ok) {
         console.log(data.message);
       } else {
