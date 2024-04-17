@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeReducers';
+import { SignOutSuccess } from '../redux/user/userSlice';
 
 
 const header = () => {
@@ -15,6 +16,24 @@ const header = () => {
  
   const { theme } = useSelector(state=>state?.theme)
   // console.log(theme)
+  /****************handle signout*********** */
+  const handleSignout = async () => {
+
+    try {
+      const res = await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+      });
+      const data = await res.json();
+    //   console.log(data);
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(SignOutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   // 
   return (
     <Navbar className='border-b-2 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 md:text-lg font-semibold'>
@@ -58,7 +77,7 @@ const header = () => {
                 </Dropdown.Item>
               </Link>
               <Dropdown.Divider />
-              <Dropdown.Item>
+              <Dropdown.Item onClick={handleSignout}>
                 Sign Out
               </Dropdown.Item>
             </Dropdown>

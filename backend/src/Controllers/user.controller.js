@@ -66,28 +66,35 @@ export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
 })
 
 export const updateAccoutDetails = asyncHandler(async (req, res, next)=>{
-    console.log('inside update controller')
-    console.log(req.body)
-    const {username, email, password} = req.body;
+    
    try {
-     if(
-         [username, email, password].some(field=>field?.trim()?0:1)
-     ){
-         throw new apiError(409, "All fields are required");
-     }
-     const hashedPassword = bcryptjs.hashSync(password, 10);
-     const currentUser = await User.findByIdAndUpdate(
-         req.user?._id, {
-             $set: {
-                 username,
-                 email,
-                 password: hashedPassword
-             },
-         },
-         {
-             new: true
+     const formData = req.body;
+
+     // Get current user data from the database
+     const currentUserData = await User.findById(req.user?._id);
+    //  console.log(currentUserData)
+
+     // Determine which fields have changed
+     const changes = {};
+
+     for (const key in formData) {
+        //  console.log(key, formData[key]);
+         if(key === 'password'){
+            changes[key] = bcryptjs.hashSync(formData[key], 10);
+            continue;
          }
-     ).select("-password -refreshToken");
+        //  const hashedPassword = bcryptjs.hashSync(password, 10);
+         if (formData[key] !== currentUserData[key]) {
+             changes[key] = formData[key];
+         }
+     }
+    //  console.log(changes)
+    // throw new apiError(500, 'intentional termination')
+     // Update the database with the changed fields
+     if (Object.keys(changes).length > 0) {
+         await User.findByIdAndUpdate(req.user?._id, changes);
+     }
+     const currentUser = await User.findByIdAndUpdate(req.user?._id).select("-password -refreshToken");
      if(!currentUser){
          throw new apiError(500, "FAILED to update user!")
      }

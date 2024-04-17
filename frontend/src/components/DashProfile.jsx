@@ -1,26 +1,32 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TextInput, Button, Label } from 'flowbite-react';
+import { TextInput, Button, Label, Modal, Alert } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { 
   SignOutSuccess, 
+  deleteUserFailure, 
+  deleteUserStart, 
+  deleteUserSuccess, 
   updateFailure, 
   updateStart, 
   updateSuccess 
 } from '../redux/user/userSlice';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import { AiFillFileText } from 'react-icons/ai';
 
 const DashProfile = () => {
   const dispatch = useDispatch();
   const filePickerRef = useRef();
   const { currentUser } = useSelector(state => state.user);
- 
-  const [localImageFile, setLocalImageFile] = useState('');
-  // console.log(currentUser)
-  // const [currentProfileURL, setCurrentProfileURL] = useState(currentUser.photoURL);
   const [formData, setFormData] = useState({});
+  const [showModal, setShowModal] = useState(false)
+  const [profileUpdate, setProfileUpdate] = useState('')
+  const [updateDetails, setUpdateDetails] = useState('');
 
   /********************** profile picture update function *****************************/
   const updateProfile = async (file)=>{
+    setUpdateDetails('');
+    setProfileUpdate('');
     try {
       dispatch(updateStart())
       const res = await fetch('/api/v1/user/upload-profile-picture', {
@@ -31,10 +37,11 @@ const DashProfile = () => {
       const updatedUser = await res.json();
       console.log(updatedUser);
       if(updatedUser.success){ //not res.successs if res the its res.ok()
+        setProfileUpdate(updatedUser.message)
         dispatch(updateSuccess(updatedUser.data));
       }
     } catch (error) {
-      dispatch(updateFailure(updateFailure(updatedUser.message)))
+      dispatch(updateFailure(updateFailure(error.message)))
       // console.log(error);
     }
   }
@@ -46,31 +53,46 @@ const DashProfile = () => {
     updateProfile(newFormData)
   }
   const handleChange = (e)=>{
+    setUpdateDetails('');
+    setProfileUpdate('');
     setFormData({...formData, [e.target.id]: e.target.value})    
   }
  
 
   /*************************account detail update functionality******************************** */
+  //mistake to improve: always keep your focus on method: get/put/post/patch/delete! it took around a day to find this bug
+  //and advice: don't spend too much time in single bug keep moving forward either coming journey will let you know the solution of bug or
+  //give time at last if dependency isn't that important
   const handleSubmit = async (e)=>{
     e.preventDefault();
+    setUpdateDetails('');
+    setProfileUpdate('');
     try {
       console.log('hello')
+      dispatch(updateStart());
       const res = await fetch('/api/v1/user/update-account-details', {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
-      const data = await res.json();
-      console.log('updated Details', data); 
+      
+      const updatedUser = await res.json();
+      if(updatedUser.success){
+        setUpdateDetails(updatedUser.message)
+        dispatch(updateSuccess(updatedUser.data));
+      }
       
     } catch (error) {
+      dispatch(updateFailure(error.message));
       console.log(error)
     }
   }
-
+  
   /***************************handle signout functionaity*********************/
+  //mistake to improve: first thing after copy paste is to import all the necessary files
   const handleSignout = async () => {
+    setUpdateDetails('');
+    setProfileUpdate('');
     try {
       const res = await fetch('/api/v1/auth/logout', {
         method: 'POST',
@@ -87,6 +109,27 @@ const DashProfile = () => {
     }
   };
  
+  /*************************handle delete user******************** */
+  const handleDeleteUser = async()=>{
+      setShowModal(false);
+      setUpdateDetails(null);
+      setProfileUpdate(null);
+      try {
+        dispatch(deleteUserStart())
+        const res = await fetch('/api/v1/auth/delete-user', {
+          method: 'DELETE',
+        });
+        // console.log('res', res);
+        const deletedUser = await res.json();
+        // console.log('deletedUser', deletedUser)
+        if(deletedUser.success){
+          dispatch(deleteUserSuccess());
+        }
+      } catch (error) {
+        dispatch(deleteUserFailure(error.message))
+        console.log(error);
+      }
+  }
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
@@ -109,6 +152,9 @@ const DashProfile = () => {
             className={`rounded-full w-full h-full object-cover border-8 border-[lightgray]`}
           />
         </div>
+        {profileUpdate && (<Alert color='success' className='mt-5'>
+          {profileUpdate}
+        </Alert>)}
         
         <TextInput
           type='text'
@@ -127,13 +173,14 @@ const DashProfile = () => {
         <TextInput
           type='password'
           id='password'
-          placeholder='password'
+          placeholder='new password (if change is required)'
           onChange={handleChange}
         />
+        {updateDetails && (<Alert color='success'> {updateDetails}</Alert>)}
         <Button
           type='submit'
           gradientDuoTone='purpleToBlue'
-          outline> working on update function
+          outline> update
         </Button>
         {currentUser.isAdmin && (
           <Link to={'/create-post'}>
@@ -148,7 +195,7 @@ const DashProfile = () => {
         )}
       </form>
       <div className='text-red-500 flex justify-between mt-5'>
-        <span className='cursor-pointer'>
+        <span className='cursor-pointer' onClick={()=>setShowModal(true)}>
           Delete Account
         </span>
         <span className='cursor-pointer' onClick={handleSignout}>
@@ -170,7 +217,7 @@ const DashProfile = () => {
           {error}
         </Alert>
       )} */}
-      {/* <Modal
+      <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
         popup
@@ -193,7 +240,7 @@ const DashProfile = () => {
             </div>
           </div>
         </Modal.Body>
-      </Modal> */}
+      </Modal>
     </div>
   );
 }

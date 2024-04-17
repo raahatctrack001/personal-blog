@@ -128,6 +128,7 @@ export const loginUser = asyncHandler(async (req, res, next)=>{
 
 
 export const deleteUser = asyncHandler(async (req, res, next)=>{
+    // throw new apiError(500, 'intentional termination');
     try {
         await User.findByIdAndDelete(
             req.user?._id
