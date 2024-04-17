@@ -11,8 +11,8 @@ import { toggleTheme } from '../redux/theme/themeReducers';
 const header = () => {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
-  const { currentUser: user } = useSelector(state => state.user);
-  const currentUser = user?.data;
+  const { currentUser } = useSelector(state => state.user);
+ 
   const { theme } = useSelector(state=>state?.theme)
   // console.log(theme)
   // 
@@ -42,7 +42,7 @@ const header = () => {
             arrowIcon={false}
             inline
             label={<Avatar 
-              className='rounded-full' 
+              className='w-16 h-14 rounded-full' 
               alt="Remy Sharp" 
               src={currentUser.photoURL} 
               rounded

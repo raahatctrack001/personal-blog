@@ -12,14 +12,14 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { loading } = useSelector(state=>state.user)
   const handleChange = (event)=>{
     setFormData({...formData, [event.target.id]: event.target.value});
   }
   const handleSubmit = async(event)=>{
       event.preventDefault();
       try{
-        setLoading(true);
+        // setLoading(true);
         // setErrorMessage(null);
         dispatch(SignInStart());
         const res = await fetch('/api/v1/auth/login', {
@@ -28,22 +28,23 @@ const SignIn = () => {
           body: JSON.stringify(formData),
         });
         
-        const data = await res.json();
-        // console.log(data)
-        if(data.success == false){
-          dispatch(SignInFailure(data.message))
-          // setErrorMessage(data.message)
+        const loggedInUser = await res.json();
+        // console.log(loggedInUser.data)
+        // console.log(loggedInUser)
+        if(loggedInUser.success == false){
+          dispatch(SignInFailure(loggedInUser.message))
+          // setErrorMessage(loggedInUser.message)
         }
-        setLoading(false)
+        // setLoading(false)
         if(res.ok){
-          dispatch(SignInSuccess(data))
-          setLoading(false);
+          dispatch(SignInSuccess(loggedInUser.data))
+          // setLoading(false);
           // setErrorMessage(null);
           naviagate('/project')
         }
       }catch(error){
         dispatch(SignInFailure(error.message))
-        setLoading(false);
+        // setLoading(false);
         // setErrorMessage(error.message||"can't reach api route!")
       }
 

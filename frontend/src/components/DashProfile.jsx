@@ -1,96 +1,178 @@
-import { Button, Label, Spinner, TextInput } from 'flowbite-react';
-import React, { useEffect, useState } from 'react'
-import { AiOutlineEyeInvisible } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react'
+import { TextInput, Button, Label } from 'flowbite-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { updateFailure, updateStart, updateSuccess } from '../redux/user/userSlice';
 
 const DashProfile = () => {
-  const { currentUser: user  } = useSelector(state => state.user);
-  const currentUser = user?.data;
-  const [loading, setLoading] = useState(false);
-  const [profileImage, setProfileImage] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const handleChange = ()=>{
-
+  const dispatch = useDispatch();
+  const filePickerRef = useRef();
+  const { currentUser } = useSelector(state => state.user);
+ 
+  const [localImageFile, setLocalImageFile] = useState('');
+  // console.log(currentUser)
+  const [currentProfileURL, setCurrentProfileURL] = useState(currentUser.photoURL);
+  const [formData, setFormData] = useState({});
+  const updateProfile = async (file)=>{
+    dispatch(updateStart())
+    try {
+      const res = await fetch('/api/v1/user/upload-profile-picture', {
+        method:"POST",
+        body: file,
+      });
+      
+      const data = res.json();
+      console.log(data);
+      if(res.success){
+        dispatch(updateSuccess(data));
+        // currentProfileURL = data.
+        // localImageFile = null;
+      }
+    } catch (error) {
+      dispatch(updateFailure(error))
+      console.log(error);
+    }
   }
-    const handleFileChange = (e) => {
-        setSelectedFile(e.target.files[0]);
-    };
+  const handleImageChange = (e)=>{
+    e.preventDefault();
+    setLocalImageFile(e.target.files[0]);
+    const newFormData = new FormData();
+    newFormData.append('profile', localImageFile);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!selectedFile) {
-            alert('Please select a file');
-            return;
-        }
+    updateProfile(newFormData)
+  }
+  const handleChange = (e)=>{
+    setFormData({...formData, [e.target.id]: e.target.value})    
+  }
+ 
+  const handleSubmit = async (e)=>{
+    e.preventDefault();
+    try {
+      console.log('hello')
+      const res = await fetch('/api/v1/user/update-account-details', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-        const formData = new FormData();
-        formData.append('profile', selectedFile);
-
-        try {
-            const response = await fetch('/api/v1/user/upload-profile-picture', {
-                method: 'POST',
-                body: formData,
-            });
-            
-            const data = await response.json();
-            console.log(data)
-            if (data.success) {
-                console.log('File uploaded successfully:', data.url);
-            } else {
-                console.error('Upload failed:', data.error);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+      const data = await res.json();
+      console.log(data); 
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+ 
   return (
-    <div>
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <input type="file" name="image" onChange={handleFileChange} />
-            <button type="submit">Upload</button>
-        </form>
-
-      <img 
-        src={currentUser.photoURL}
+    <div className='max-w-lg mx-auto p-3 w-full'>
+      <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+        <input
+          type='file'
+          accept='image/*'
+          onChange={handleImageChange}
+          ref={filePickerRef}
+          hidden
+        />
+        <div
+          className='relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full'
+          onClick={() => filePickerRef.current.click()}
+        >
+         
+          <img
+            src={currentProfileURL || currentUser.photoURL}
+            alt='user'
+            className={`rounded-full w-full h-full object-cover border-8 border-[lightgray]`}
+          />
+        </div>
         
-        className='w-32 h-32 rounded-full aspect-square  ' 
-      />
-      <form className='flex flex-col gap-3'>
-            <div>
-              <Label className='pl-1'> Your username </Label>
-              <TextInput 
-                type='text'
-                placeholder='username'
-                id='username'
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <Label className='pl-1'> Your email </Label>
-              <TextInput 
-                type='email'
-                placeholder='name@provider.com'
-                id='email'
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <Label className='pl-1'> Your password </Label>
-              <TextInput 
-                type='password'
-                placeholder='*********'
-                id='password'
-                rightIcon={AiOutlineEyeInvisible}
-                onChange={handleChange}
-              />
-            </div>
-            <Button className='w-full mt-2' type='submit'
-            disabled = {loading} >
-              {loading ?  <><Spinner /> <p className='pl-3'> loading... </p></>: <p>Sign Up</p> }
+        <TextInput
+          type='text'
+          id='username'
+          placeholder='username'
+          defaultValue={currentUser.username}
+          onChange={handleChange}
+        />
+        <TextInput
+          type='email'
+          id='email'
+          placeholder='email'
+          defaultValue={currentUser.email}
+          onChange={handleChange}
+        />
+        <TextInput
+          type='password'
+          id='password'
+          placeholder='password'
+          onChange={handleChange}
+        />
+        <Button
+          type='submit'
+          gradientDuoTone='purpleToBlue'
+          outline> Update
+        </Button>
+        {currentUser.isAdmin && (
+          <Link to={'/create-post'}>
+            <Button
+              type='button'
+              gradientDuoTone='purpleToPink'
+              className='w-full'
+            >
+              Create a post
             </Button>
-          </form>
+          </Link>
+        )}
+      </form>
+      <div className='text-red-500 flex justify-between mt-5'>
+        <span className='cursor-pointer'>
+          Delete Account
+        </span>
+        <span className='cursor-pointer'>
+          Sign Out
+        </span>
+      </div>
+      {/* {updateUserSuccess && (
+        <Alert color='success' className='mt-5'>
+          {updateUserSuccess}
+        </Alert>
+      )}
+      {updateUserError && (
+        <Alert color='failure' className='mt-5'>
+          {updateUserError}
+        </Alert>
+      )}
+      {error && (
+        <Alert color='failure' className='mt-5'>
+          {error}
+        </Alert>
+      )} */}
+      {/* <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete your account?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={handleDeleteUser}>
+                Yes, I'm sure
+              </Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal> */}
     </div>
-  )
+  );
 }
+
 
 export default DashProfile

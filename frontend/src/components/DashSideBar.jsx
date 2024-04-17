@@ -17,8 +17,9 @@ export default function DashSidebar() {
   const location = useLocation();//anything after? in link address: ex: /dashbaord?tab=profile // ?tab=profile
   const dispatch = useDispatch();
 //   console.log(location)
-  const { currentUser: user  } = useSelector(state => state.user);
-  const currentUser = user?.data;
+  const { currentUser } = useSelector(state => state.user);
+  // console.log(currentUser)
+  
   const [tab, setTab] = useState('');
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search); // /dashboard?tab=profile&&limit=4&&something&&else urlParamsCount = 4(no(&&)+1)
