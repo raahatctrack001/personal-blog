@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TextInput, Button, Label, Modal, Alert } from 'flowbite-react';
+import { TextInput, Button, Label, Modal, Alert, Spinner } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { 
@@ -12,16 +12,16 @@ import {
   updateSuccess 
 } from '../redux/user/userSlice';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { AiFillFileText } from 'react-icons/ai';
 
 const DashProfile = () => {
   const dispatch = useDispatch();
   const filePickerRef = useRef();
   const { currentUser } = useSelector(state => state.user);
-  const [formData, setFormData] = useState({});
-  const [showModal, setShowModal] = useState(false)
-  const [profileUpdate, setProfileUpdate] = useState('')
-  const [updateDetails, setUpdateDetails] = useState('');
+  const [ formData, setFormData] = useState({});
+  const [ showModal, setShowModal] = useState(false)
+  const [ profileUpdate, setProfileUpdate] = useState('')
+  const [ updateDetails, setUpdateDetails] = useState('');
+  const { loading } = useSelector(state=>state.user)
 
   /********************** profile picture update function *****************************/
   const updateProfile = async (file)=>{
@@ -180,7 +180,8 @@ const DashProfile = () => {
         <Button
           type='submit'
           gradientDuoTone='purpleToBlue'
-          outline> update
+          outline>
+         {loading ? (<><Spinner /> Updating... </>) : ('update')}
         </Button>
         {currentUser.isAdmin && (
           <Link to={'/create-post'}>
@@ -188,6 +189,7 @@ const DashProfile = () => {
               type='button'
               gradientDuoTone='purpleToPink'
               className='w-full'
+              disabled={loading}
             >
               Create a post
             </Button>

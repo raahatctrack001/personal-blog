@@ -27,7 +27,7 @@ const Oauth = () => {
             const data = await res.json()
             // console.log(data)
             if (res.ok){
-                dispatch(SignInSuccess(data))
+                dispatch(SignInSuccess(data.data))
                 navigate('/')
             }
         } catch (error) {
