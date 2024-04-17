@@ -11,33 +11,31 @@ const DashProfile = () => {
  
   const [localImageFile, setLocalImageFile] = useState('');
   // console.log(currentUser)
-  const [currentProfileURL, setCurrentProfileURL] = useState(currentUser.photoURL);
+  // const [currentProfileURL, setCurrentProfileURL] = useState(currentUser.photoURL);
   const [formData, setFormData] = useState({});
+
   const updateProfile = async (file)=>{
-    dispatch(updateStart())
     try {
+      dispatch(updateStart())
       const res = await fetch('/api/v1/user/upload-profile-picture', {
         method:"POST",
         body: file,
       });
       
-      const data = res.json();
-      console.log(data);
-      if(res.success){
-        dispatch(updateSuccess(data));
-        // currentProfileURL = data.
-        // localImageFile = null;
+      const updatedUser = await res.json();
+      console.log(updatedUser);
+      if(updatedUser.success){ //not res.successs if res the its res.ok()
+        dispatch(updateSuccess(updatedUser.data));
       }
     } catch (error) {
-      dispatch(updateFailure(error))
-      console.log(error);
+      dispatch(updateFailure(updateFailure(updatedUser.message)))
+      // console.log(error);
     }
   }
   const handleImageChange = (e)=>{
     e.preventDefault();
-    setLocalImageFile(e.target.files[0]);
     const newFormData = new FormData();
-    newFormData.append('profile', localImageFile);
+    newFormData.append('profile', e.target.files[0]);
 
     updateProfile(newFormData)
   }
@@ -80,7 +78,7 @@ const DashProfile = () => {
         >
          
           <img
-            src={currentProfileURL || currentUser.photoURL}
+            src={currentUser.photoURL}
             alt='user'
             className={`rounded-full w-full h-full object-cover border-8 border-[lightgray]`}
           />

@@ -10,6 +10,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET 
 });
 const uploadOnCloudinary = async (localFilePath)=>{
+    // console.log("inside cloudinary")
     if(!localFilePath)
         return null;
     try{
@@ -18,6 +19,7 @@ const uploadOnCloudinary = async (localFilePath)=>{
         })
 
         fs.unlinkSync(localFilePath);
+        // console.log(response)
         return response;
     }
     catch(error){

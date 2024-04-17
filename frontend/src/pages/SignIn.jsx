@@ -29,7 +29,6 @@ const SignIn = () => {
         });
         
         const loggedInUser = await res.json();
-        // console.log(loggedInUser.data)
         // console.log(loggedInUser)
         if(loggedInUser.success == false){
           dispatch(SignInFailure(loggedInUser.message))

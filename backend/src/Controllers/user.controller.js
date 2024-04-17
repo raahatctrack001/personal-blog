@@ -9,7 +9,7 @@ import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
 export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
     try {
         const profileLocalPath = req.file.path;
-        console.log("profile pic is here", profileLocalPath)
+        // console.log("profile pic is here", profileLocalPath)
         if(!profileLocalPath){
             throw new apiError(409, "please select an image!")
         }
@@ -29,26 +29,35 @@ export const uploadProfilePicture = asyncHandler(async(req, res, next)=>{
         //     .catch(error=>console.log("failed to update database", error))
         // console.log('updated user', updatedUser);
         //Or
+        currentUser.photoURL = response.url;
+        currentUser// Save or update the user document in the database
+        .save()
+        .then(savedUser => {
+            console.log('Tokens generated and added successfully!');
+          })
+        .catch(err => {
+            next(err)
+          });
 
-        const updatedUser = await User.findByIdAndUpdate(
-            req.user?._id,
-            {
-                $set:{
-                    photoURL: response.url,
-                },
-            },            
-            {
-                new: true
-            }
-        ).select("-password -refreshToken");
-        if(!updatedUser){
-            throw new apiError(500, "failed to update profile picture base");
-        }
-        console.log(updatedUser);
+        // const updatedUser = await User.findByIdAndUpdate(
+        //     req.user?._id,
+        //     {
+        //         $set:{
+        //             photoURL: response.url,
+        //         },
+        //     },            
+        //     {
+        //         new: true,
+        //     }
+        // ).select("-password -refreshToken");
+        // if(!updatedUser){
+        //     throw new apiError(500, "failed to update profile picture base");
+        // }
+        // console.log(currentUser);
         return res
             .status(200)
             .json(
-                new apiResponse(200, "profile picture update SUCCESS", updatedUser)
+                new apiResponse(200, "profile picture update SUCCESS", currentUser)
             )
     } catch (error) {
         next(error);

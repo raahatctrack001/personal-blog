@@ -28,11 +28,11 @@ const header = () => {
           className='hidden md:inline'
         />
       </form>
-      <Button outline className='h-10 bg-green-500 md:hidden'> <AiOutlineSearch /> </Button>
-      <div className='flex gap-2 md:order-2'>
+      <div className='flex gap-2  md:order-2'>
+        <Button outline className='h-10 my-auto bg-green-500 md:hidden'> <AiOutlineSearch /> </Button>
         <Button 
         outline 
-        className='w-14 h-10 bg-green-500'
+        className='w-14 h-10 my-auto bg-green-500'
         onClick={()=>dispatch(toggleTheme())}
         > {theme === 'light' ? (<FaMoon className='text-gray-800'/>) : (<FaSun />)} </Button>
         {
@@ -42,7 +42,7 @@ const header = () => {
             arrowIcon={false}
             inline
             label={<Avatar 
-              className='w-16 h-14 rounded-full' 
+              className='w-16 h-14 my-auto rounded-full' 
               alt="Remy Sharp" 
               src={currentUser.photoURL} 
               rounded
@@ -70,7 +70,9 @@ const header = () => {
         )
         }
         
-        <Navbar.Toggle />
+        <Navbar.Toggle 
+          className='my-auto'
+        />
       </div>
 
       <Navbar.Collapse>
