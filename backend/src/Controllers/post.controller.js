@@ -77,6 +77,7 @@ export const createPost = asyncHandler(async (req, res, next)=>{
 })
 
 export const getPosts = asyncHandler(async (req, res, next) => {
+  console.log("api fired")
     // console.log(req.query);
     // console.log(req)
     // throw new apiError(500, "intentional termination for unit testing.");
@@ -202,4 +203,8 @@ export const updatePost = asyncHandler(async (req, res, next)=>{
   next(error);
   // console.log(error) 
 }
+})
+
+export const getPostByAuthor = asyncHandler(async (req, res, next)=>{
+  
 })

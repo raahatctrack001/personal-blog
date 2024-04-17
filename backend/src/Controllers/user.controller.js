@@ -91,8 +91,15 @@ export const updateAccoutDetails = asyncHandler(async (req, res, next)=>{
     //  console.log(changes)
     // throw new apiError(500, 'intentional termination')
      // Update the database with the changed fields
-     if (Object.keys(changes).length > 0) {
-         await User.findByIdAndUpdate(req.user?._id, changes);
+     try {
+        if (Object.keys(changes).length > 0) {
+            await User.findByIdAndUpdate(req.user?._id, changes);
+        }
+        else{
+           throw new apiError(404, "Please make some changes then update")
+        }
+     } catch (error) {
+        next(error)
      }
      const currentUser = await User.findByIdAndUpdate(req.user?._id).select("-password -refreshToken");
      if(!currentUser){

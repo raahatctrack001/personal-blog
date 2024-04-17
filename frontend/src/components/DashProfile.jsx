@@ -21,6 +21,7 @@ const DashProfile = () => {
   const [ showModal, setShowModal] = useState(false)
   const [ profileUpdate, setProfileUpdate] = useState('')
   const [ updateDetails, setUpdateDetails] = useState('');
+  const [ updatedFailed, setUpdateFailed ] = useState('') 
   const { loading } = useSelector(state=>state.user)
 
   /********************** profile picture update function *****************************/
@@ -68,7 +69,7 @@ const DashProfile = () => {
     setUpdateDetails('');
     setProfileUpdate('');
     try {
-      console.log('hello')
+      // console.log('hello')
       dispatch(updateStart());
       const res = await fetch('/api/v1/user/update-account-details', {
         method: 'PATCH',
@@ -81,8 +82,14 @@ const DashProfile = () => {
         setUpdateDetails(updatedUser.message)
         dispatch(updateSuccess(updatedUser.data));
       }
+      else{
+        // setUpdateDetails(updatedUser.message)
+        setUpdateFailed(updatedUser.message)
+        dispatch(updateFailure(updatedUser.message))
+      }
       
     } catch (error) {
+      setUpdateFailed(updatedUser.message)
       dispatch(updateFailure(error.message));
       console.log(error)
     }
@@ -196,6 +203,7 @@ const DashProfile = () => {
           </Link>
         )}
       </form>
+      {updatedFailed && (<Alert color={'failure'} > {updatedFailed}</Alert>)}
       <div className='text-red-500 flex justify-between mt-5'>
         <span className='cursor-pointer' onClick={()=>setShowModal(true)}>
           Delete Account
@@ -208,12 +216,8 @@ const DashProfile = () => {
         <Alert color='success' className='mt-5'>
           {updateUserSuccess}
         </Alert>
-      )}
-      {updateUserError && (
-        <Alert color='failure' className='mt-5'>
-          {updateUserError}
-        </Alert>
-      )}
+      )} */
+      /*
       {error && (
         <Alert color='failure' className='mt-5'>
           {error}

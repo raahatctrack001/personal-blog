@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useState } from 'react';
 // import { CircularProgressbar } from 'react-circular-progressbar';
 // import 'react-circular-progressbar/dist/styles.css';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function CreatePost() {
     const [postImage, setPostImage] = useState(null);
@@ -54,6 +54,7 @@ export default function CreatePost() {
         const responseData = await res.json();
         if(responseData.success){
             setPostUploadMessage(responseData.message);
+            Navigate('/dashboard?tab=post')
         }
         else{
             setPublishError(responseData.message)
