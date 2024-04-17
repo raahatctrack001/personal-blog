@@ -3,6 +3,7 @@ import apiError from "../Utils/apiError.js";
 import apiResponse from "../Utils/apiResponse.js";
 import asyncHandler from "../Utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../Services/cloudinar.yservices.js";
+import { error } from "console";
 // import User from "../Models/user.model.js";
 // import upload from "../Middlewares/multer.middleware.js";
 // import { resolve } from "path";
@@ -68,7 +69,7 @@ export const createPost = asyncHandler(async (req, res, next)=>{
         return res  
             .status(200)
             .json(
-                new apiResponse(200, "Post saved!", newPost )
+                new apiResponse(200, "Post published!", newPost )
             )
     }
     catch(error){
@@ -132,6 +133,9 @@ export const getPosts = asyncHandler(async (req, res, next) => {
 })
 
 export const deletePost = asyncHandler(async (req, res, next)=>{
+  console.log(req.user?._id)
+  console.log(req.params?.userId)
+  // throw error
   try {
       if(!req.user?.isAdmin){
         throw new apiError(400, "You are not authorised to delete the post.");
@@ -139,7 +143,11 @@ export const deletePost = asyncHandler(async (req, res, next)=>{
       if(req.params.userId != req.user?._id){
         throw new apiError(400, "You can only delete your own posts.");
       }
-      const deletedPost = await Post.findByIdAndDelete(req.params.postId);
+      const postDetail = await Post.findById(req.params?.postId);
+      if(postDetail?.author != req.params?.userId){
+        throw new apiError(409, "you can't delete other's written post!");
+      }
+      const deletedPost = await Post.findByIdAndDelete(req.params?.postId);
       return res
         .status(200)
         .json(

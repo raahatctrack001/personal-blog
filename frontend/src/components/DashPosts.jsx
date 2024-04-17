@@ -7,12 +7,14 @@ import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
-  const [userPosts, setUserPosts] = useState([]);
-  const [showMore, setShowMore] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [postIdToDelete, setPostIdToDelete] = useState('');
+  const [ userPosts, setUserPosts] = useState([]);
+  const [ showMore, setShowMore] = useState(true);
+  const [ showModal, setShowModal] = useState(false);
+  const [ postIdToDelete, setPostIdToDelete] = useState('');
+  const [ deleteError, setDeleteError ] = useState(null);
   useEffect(() => {
     const fetchPosts = async () => {
+      setDeleteError(null)
       try {
         const res = await fetch('/api/v1/post/get-posts');
         const getPostResponse = await res.json();
@@ -37,9 +39,10 @@ export default function DashPosts() {
     const startIndex = userPosts.length;
     try {
       const res = await fetch(
-        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
+        `/api/v1/post/get-posts?startIndex=${startIndex}`
       );
-      const data = await res.json();
+      const responseData = await res.json();
+      const data = responseData.data;
       if (res.ok) {
         setUserPosts((prev) => [...prev, ...data.posts]);
         if (data.posts.length < 9) {
@@ -55,15 +58,17 @@ export default function DashPosts() {
     setShowModal(false);
     try {
       const res = await fetch(
-        `/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
+        `/api/v1/post/delete-post/${postIdToDelete}/${currentUser._id}`,
         {
           method: 'DELETE',
         }
       );
       const data = await res.json();
       if (!res.ok) {
+        alert(data.message)
         console.log(data.message);
       } else {
+        alert(data.message)
         setUserPosts((prev) =>
           prev.filter((post) => post._id !== postIdToDelete)
         );

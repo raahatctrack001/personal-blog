@@ -7,7 +7,8 @@ import { useState } from 'react';
 // import 'react-circular-progressbar/dist/styles.css';
 import { Navigate, useNavigate } from 'react-router-dom';
 
-export default function CreatePost() {
+export default function CreatePost() {  
+  const navigate = useNavigate()
     const [postImage, setPostImage] = useState(null);
     const [postUploadMessage, setPostUploadMessage] = useState(null);
 //   const [file, setFile] = useState(null);
@@ -54,7 +55,7 @@ export default function CreatePost() {
         const responseData = await res.json();
         if(responseData.success){
             setPostUploadMessage(responseData.message);
-            Navigate('/dashboard?tab=post')
+            navigate('/dashboard?tab=posts')
         }
         else{
             setPublishError(responseData.message)
